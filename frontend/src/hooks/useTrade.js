@@ -40,16 +40,17 @@ export default function useTrade() {
 
   return {
     coins,
-    selectedCoin: liveSelectedCoin,
+    selectedCoin,
     setSelectedCoin,
     quantity,
     setQuantity,
     total,
     wallet,
+    portfolio,
     ownedQuantity,
     feedback,
     loading,
     handleBuy,
     handleSell,
-  };
+};
 }

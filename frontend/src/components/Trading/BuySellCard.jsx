@@ -1,109 +1,170 @@
-import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
-import Card from "../UI/Card";
-import Input from "../UI/Input";
-import Select from "../UI/Select";
-import PrimaryButton from "../UI/PrimaryButton";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { FaArrowUp, FaArrowDown } from "react-icons/fa";
+import { FaBitcoin } from "react-icons/fa6";
 
 export default function BuySellCard({ type, trade }) {
   const isBuy = type === "Buy";
 
-  const {
-    coins,
-    selectedCoin,
-    setSelectedCoin,
-    quantity,
-    setQuantity,
-    total,
-    wallet,
-    ownedQuantity,
-    feedback,
-  } = trade;
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (isBuy) trade.handleBuy();
-    else trade.handleSell();
-  }
+  const submitTrade = () => {
+    if (isBuy) {
+      trade.handleBuy();
+    } else {
+      trade.handleSell();
+    }
+  };
 
   return (
-    <Card
-      title={`${type} Cryptocurrency`}
-      subtitle={isBuy ? "Use your virtual balance to buy" : "Sell coins from your portfolio"}
-      className={isBuy ? "border-t-4 border-t-green-600" : "border-t-4 border-t-red-600"}
-    >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <Select
-          label="Select Coin"
-          value={selectedCoin.symbol}
-          onChange={(e) => {
-            const coin = coins.find((c) => c.symbol === e.target.value);
-            setSelectedCoin(coin);
-          }}
+    <div className="bg-[#101010] border border-[#242424] rounded-3xl p-7 shadow-xl">
+
+      {/* Header */}
+
+      <div className="flex items-center gap-3 mb-8">
+
+        <div
+          className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+            isBuy ? "bg-green-600/20" : "bg-red-600/20"
+          }`}
         >
-          {coins.map((coin) => (
-            <option key={coin.id} value={coin.symbol}>
-              {coin.name} ({coin.symbol})
+          {isBuy ? (
+            <FaArrowUp className="text-green-500 text-xl" />
+          ) : (
+            <FaArrowDown className="text-red-500 text-xl" />
+          )}
+        </div>
+
+        <div>
+          <h2 className="text-white text-2xl font-bold">
+            {type} Crypto
+          </h2>
+
+          <p className="text-gray-400 text-sm">
+            Virtual Trading
+          </p>
+        </div>
+
+      </div>
+
+      {/* Coin */}
+
+      <div className="mb-6">
+
+        <label className="text-gray-400 block mb-2">
+          Cryptocurrency
+        </label>
+
+        <select
+          value={trade.selectedCoin.id}
+          onChange={(e) => {
+            const coin = trade.coins.find(
+              (c) => c.id === Number(e.target.value)
+            );
+            trade.setSelectedCoin(coin);
+          }}
+          className="w-full bg-[#181818] border border-[#333] rounded-xl p-4 text-white outline-none"
+        >
+          {trade.coins.map((coin) => (
+            <option key={coin.id} value={coin.id}>
+              {coin.name}
             </option>
           ))}
-        </Select>
+        </select>
 
-        <Input
-          label="Quantity"
+      </div>
+
+      {/* Price */}
+
+      <div className="bg-[#181818] rounded-2xl p-5 mb-6">
+
+        <div className="flex justify-between items-center">
+
+          <div className="flex items-center gap-3">
+
+            <FaBitcoin className="text-yellow-500 text-xl" />
+
+            <span className="text-gray-400">
+              Live Price
+            </span>
+
+          </div>
+
+          <span className="text-white font-bold text-xl">
+            $
+            {trade.selectedCoin.price.toLocaleString()}
+          </span>
+
+        </div>
+
+      </div>
+
+      {/* Quantity */}
+
+      <div className="mb-6">
+
+        <label className="text-gray-400 block mb-2">
+          Quantity
+        </label>
+
+        <input
           type="number"
-          min="0"
-          step="any"
+          value={trade.quantity}
+          onChange={(e) =>
+            trade.setQuantity(e.target.value)
+          }
           placeholder="0.00"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
+          className="w-full bg-[#181818] border border-[#333] rounded-xl p-4 text-white outline-none"
         />
 
-        <Input
-          label="Current Price"
-          readOnly
-          value={formatCurrency(selectedCoin.price)}
-        />
+      </div>
 
-        <Input
-          label={isBuy ? "Estimated Cost" : "Estimated Receive"}
-          readOnly
-          value={formatCurrency(total)}
-        />
+      {/* Total */}
 
-        <div className="flex justify-between text-sm text-gray-400">
-          <span>Available Balance</span>
-          <span className="text-white font-semibold">{formatCurrency(wallet)}</span>
+      <div className="space-y-4 mb-8">
+
+        <div className="flex justify-between">
+
+          <span className="text-gray-400">
+            Total Cost
+          </span>
+
+          <span className="text-white font-bold">
+            $
+            {trade.total.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+            })}
+          </span>
+
         </div>
 
         {!isBuy && (
-          <div className="flex justify-between text-sm text-gray-400">
-            <span>You Own</span>
-            <span className="text-white font-semibold">
-              {ownedQuantity} {selectedCoin.symbol}
+
+          <div className="flex justify-between">
+
+            <span className="text-gray-400">
+              Owned
             </span>
+
+            <span className="text-white font-bold">
+              {trade.ownedQuantity}
+            </span>
+
           </div>
+
         )}
 
-        {feedback && (
-          <div
-            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium ${
-              feedback.type === "success"
-                ? "bg-green-600/10 text-green-400 border border-green-600/30"
-                : "bg-red-600/10 text-red-400 border border-red-600/30"
-            }`}
-          >
-            {feedback.type === "success" ? <FaCheckCircle /> : <FaExclamationCircle />}
-            {feedback.message}
-          </div>
-        )}
+      </div>
 
-        <PrimaryButton
-          type="submit"
-          className={`w-full ${isBuy ? "" : "bg-red-600 hover:bg-red-700"}`}
-        >
-          {type} Now
-        </PrimaryButton>
-      </form>
-    </Card>
+      {/* Button */}
+
+      <button
+        onClick={submitTrade}
+        className={`w-full py-4 rounded-2xl font-bold text-lg duration-300 ${
+          isBuy
+            ? "bg-green-600 hover:bg-green-700"
+            : "bg-red-600 hover:bg-red-700"
+        }`}
+      >
+        {isBuy ? "Buy Now" : "Sell Now"}
+      </button>
+
+    </div>
   );
 }
