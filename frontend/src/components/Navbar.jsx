@@ -1,7 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import {
   FaBitcoin,
-  FaChartLine,
   FaUserCircle,
 } from "react-icons/fa";
 

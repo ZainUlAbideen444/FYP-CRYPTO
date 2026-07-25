@@ -7,7 +7,6 @@ import HowItWorks from "../components/HowItWorks";
 import WhyChoose from "../components/WhyChoose";
 import CTA from "../components/CTA";
 import Footer from "../components/Footer";
-import DashboardStatCard from "../components/DashboardStatCard";
 
 export default function Landing() {
   return (
