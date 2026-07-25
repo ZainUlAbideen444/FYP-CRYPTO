@@ -1,0 +1,7 @@
+import { useState } from "react";
+import { FaRotateLeft } from "react-icons/fa6";
+import PageHeader from "../components/UI/PageHeader";
+import PrimaryButton from "../components/UI/PrimaryButton";
+import { useTradeContext } from "../context/TradeContext";
+
+export default function Settings() { const { resetAccount, wallet } = useTradeContext(); const [message, setMessage] = useState(""); const [busy, setBusy] = useState(false); async function reset() { if (!window.confirm("Reset your $10,000 wallet, holdings, and all trade history? This cannot be undone.")) return; setBusy(true); const result = await resetAccount(); setMessage(result.message); setBusy(false); } return <div className="space-y-8"><PageHeader title="Settings" subtitle="Manage your virtual trading account."/><section className="max-w-2xl rounded-3xl border border-red-500/20 bg-[#111111] p-6 sm:p-8"><div className="flex items-start gap-4"><div className="rounded-2xl bg-red-500/15 p-4 text-red-400"><FaRotateLeft /></div><div><h2 className="text-xl font-bold text-white">Reset simulation</h2><p className="mt-2 leading-6 text-gray-400">Your current cash balance is ${Number(wallet).toLocaleString()}. Resetting restores $10,000 virtual funds and permanently removes all holdings and trade history.</p></div></div><PrimaryButton onClick={reset} disabled={busy} className="mt-7 bg-red-600">{busy ? "Resetting..." : "Reset portfolio"}</PrimaryButton>{message && <p className="mt-4 text-sm text-gray-400">{message}</p>}</section></div>; }

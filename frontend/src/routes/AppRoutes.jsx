@@ -13,6 +13,8 @@ import Market from "../pages/Market";
 import Trading from "../pages/Trading";
 import Portfolio from "../pages/Portfolio";
 import Performance from "../pages/Performance";
+import TradeHistory from "../pages/TradeHistory";
+import Settings from "../pages/Settings";
 
 import NotFound from "../pages/NotFound";
 
@@ -34,6 +36,8 @@ export default function AppRoutes() {
           <Route path="/trading" element={<Trading />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/performance" element={<Performance />} />
+          <Route path="/history" element={<TradeHistory />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>
 

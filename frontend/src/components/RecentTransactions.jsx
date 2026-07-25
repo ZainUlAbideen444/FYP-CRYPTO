@@ -10,7 +10,7 @@ export default function RecentTransactions({ transactions }) {
           No trades yet — head to the Trading page to get started.
         </p>
       ) : (
-        <table className="w-full">
+        <div className="overflow-x-auto"><table className="min-w-[520px] w-full">
           <thead>
             <tr className="text-gray-400">
               <th className="text-left pb-4">Coin</th>
@@ -33,7 +33,7 @@ export default function RecentTransactions({ transactions }) {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       )}
     </div>
   );

@@ -11,7 +11,7 @@ export default function NotFound() {
 
       <h1 className="text-white text-7xl font-black">404</h1>
       <p className="text-gray-400 mt-4 text-lg max-w-md">
-        This page doesn't exist — looks like it drifted off-chain.
+        This page doesn't exist — it looks like it drifted off-chain.
       </p>
 
       <Link to="/">

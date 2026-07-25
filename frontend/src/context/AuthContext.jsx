@@ -1,27 +1,23 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import * as authService from "../services/authService";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => authService.getCurrentUser());
-  const [loading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => { authService.getCurrentUser().then(setUser).catch(() => setUser(null)).finally(() => setLoading(false)); }, []);
 
-  function register(payload) {
-    const result = authService.register(payload);
-    if (result.success) setUser(result.user);
-    return result;
+  async function register(payload) {
+    try { const result = await authService.register(payload); setUser(result.user); return result; } catch (error) { return { success: false, message: error.message }; }
   }
 
-  function login(payload) {
-    const result = authService.login(payload);
-    if (result.success) setUser(result.user);
-    return result;
+  async function login(payload) {
+    try { const result = await authService.login(payload); setUser(result.user); return result; } catch (error) { return { success: false, message: error.message }; }
   }
 
-  function logout() {
-    authService.logout();
-    setUser(null);
+  async function logout() {
+    try { await authService.logout(); } finally { setUser(null); }
   }
 
   return (

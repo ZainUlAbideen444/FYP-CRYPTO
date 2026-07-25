@@ -2,19 +2,19 @@ import { useMemo, useState } from "react";
 import { useTradeContext } from "../context/TradeContext";
 
 export default function useTrade() {
-  const { coins, wallet, portfolio, buy, sell } = useTradeContext();
+  const { coins, wallet, portfolio, buy, sell, loading } = useTradeContext();
 
-  const [selectedCoin, setSelectedCoinState] = useState(coins[0]);
+  const [selectedCoin, setSelectedCoinState] = useState(null);
   const [quantity, setQuantity] = useState("");
   const [feedback, setFeedback] = useState(null); // { type: 'success' | 'error', message }
 
   // Keep selectedCoin's price fresh as the simulated market ticks.
   const liveSelectedCoin = useMemo(
-    () => coins.find((c) => c.symbol === selectedCoin.symbol) || selectedCoin,
+    () => coins.find((c) => c.id === selectedCoin?.id) || selectedCoin || coins[0] || {},
     [coins, selectedCoin]
   );
 
-  const total = quantity === "" ? 0 : Number(quantity) * liveSelectedCoin.price;
+  const total = quantity === "" ? 0 : Number(quantity) * (liveSelectedCoin.price || 0);
 
   const holding = portfolio.find((p) => p.symbol === liveSelectedCoin.symbol);
   const ownedQuantity = holding ? holding.quantity : 0;
@@ -24,15 +24,15 @@ export default function useTrade() {
     setFeedback(null);
   }
 
-  function handleBuy() {
-    const result = buy(liveSelectedCoin.symbol, quantity);
+  async function handleBuy() {
+    const result = await buy(liveSelectedCoin.id, quantity);
     setFeedback({ type: result.success ? "success" : "error", message: result.message });
     if (result.success) setQuantity("");
     return result;
   }
 
-  function handleSell() {
-    const result = sell(liveSelectedCoin.symbol, quantity);
+  async function handleSell() {
+    const result = await sell(liveSelectedCoin.id, quantity);
     setFeedback({ type: result.success ? "success" : "error", message: result.message });
     if (result.success) setQuantity("");
     return result;
@@ -48,6 +48,7 @@ export default function useTrade() {
     wallet,
     ownedQuantity,
     feedback,
+    loading,
     handleBuy,
     handleSell,
   };

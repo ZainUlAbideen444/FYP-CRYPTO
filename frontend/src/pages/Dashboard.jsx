@@ -27,7 +27,7 @@ export default function Dashboard() {
       <div>
         <h1 className="text-white text-4xl font-black">Dashboard</h1>
         <p className="text-gray-400 mt-2">
-          Welcome back, {user?.name || "Trader"} 👋
+          Welcome back, {user?.name || "Trader"}. Here's your trading snapshot.
         </p>
       </div>
 

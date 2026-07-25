@@ -2,6 +2,7 @@ import Card from "../UI/Card";
 import Badge from "../UI/badge";
 import { formatCurrency, formatPercent } from "../../utils/formatCurrency";
 import { calculatePortfolioProfit } from "../../utils/calculateProfit";
+import PriceChart from "../PriceChart";
 
 export default function TradeSummary({ trade }) {
   const { coins, wallet, portfolio, selectedCoin } = trade;
@@ -52,6 +53,7 @@ export default function TradeSummary({ trade }) {
           </div>
         </div>
       </Card>
+      <PriceChart coinId={selectedCoin.id} title={`${selectedCoin.symbol} chart`} />
     </div>
   );
 }

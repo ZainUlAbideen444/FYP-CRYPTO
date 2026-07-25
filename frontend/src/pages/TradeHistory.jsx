@@ -1,0 +1,10 @@
+import { useEffect, useState } from "react";
+import PageHeader from "../components/UI/PageHeader";
+import { formatCurrency } from "../utils/formatCurrency";
+import api from "../services/api";
+
+export default function TradeHistory() {
+  const [trades, setTrades] = useState([]); const [loading, setLoading] = useState(true); const [error, setError] = useState("");
+  useEffect(() => { api.get("/trades/history").then(({ data }) => setTrades(data.trades)).catch((err) => setError(err.message || "Could not load trade history.")).finally(() => setLoading(false)); }, []);
+  return <div className="space-y-8"><PageHeader title="Trade History" subtitle="Review every virtual order and realized result."/><section className="overflow-hidden rounded-3xl border border-white/10 bg-[#111111]">{loading ? <div className="p-10 text-center text-gray-500">Loading trades...</div> : error ? <div className="p-10 text-center text-red-400">{error}</div> : <div className="overflow-x-auto"><table className="min-w-[760px] w-full text-sm"><thead className="border-b border-white/10 text-left text-gray-400"><tr><th className="px-6 py-4">Asset</th><th>Side</th><th>Quantity</th><th>Price</th><th>Total</th><th>P/L</th><th className="pr-6 text-right">Time</th></tr></thead><tbody>{trades.length ? trades.map((trade) => <tr key={trade._id} className="border-b border-white/5 text-gray-300"><td className="px-6 py-4"><strong className="text-white">{trade.name}</strong><span className="ml-2 text-xs text-gray-500">{trade.symbol}</span></td><td className={trade.type === "buy" ? "text-emerald-400" : "text-red-400"}>{trade.type.toUpperCase()}</td><td>{trade.quantity}</td><td>{formatCurrency(trade.price)}</td><td>{formatCurrency(trade.totalValue)}</td><td className={trade.realizedProfit >= 0 ? "text-emerald-400" : "text-red-400"}>{trade.type === "sell" ? formatCurrency(trade.realizedProfit) : "—"}</td><td className="pr-6 text-right text-gray-500">{new Date(trade.createdAt).toLocaleString()}</td></tr>) : <tr><td colSpan="7" className="p-10 text-center text-gray-500">No trades yet. Start in the trading terminal.</td></tr>}</tbody></table></div>}</section></div>;
+}

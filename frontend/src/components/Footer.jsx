@@ -108,7 +108,7 @@ export default function Footer() {
 
         <div className="border-t border-white/10 mt-16 pt-8 text-center text-gray-500">
 
-          © 2026 Crypto Web — Final Year Project | Developed using MERN Stack
+          © 2026 Crypto Web — Final Year Project | Built with the MERN stack
 
         </div>
 

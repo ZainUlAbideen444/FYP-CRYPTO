@@ -17,12 +17,12 @@ export default function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
     setSubmitting(true);
 
-    const result = login(form);
+    const result = await login(form);
 
     setSubmitting(false);
     if (!result.success) {
@@ -67,7 +67,7 @@ export default function Login() {
             type="password"
             name="password"
             required
-            placeholder="••••••••"
+            placeholder="Enter your password"
             value={form.password}
             onChange={handleChange}
             icon={<FaLock />}

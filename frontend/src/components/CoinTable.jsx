@@ -7,7 +7,7 @@ export default function CoinTable({ coins }) {
 
   return (
     <div className="bg-[#111111] rounded-3xl border border-[#222] overflow-hidden">
-      <table className="w-full">
+      <div className="overflow-x-auto"><table className="min-w-[700px] w-full">
         <thead className="bg-[#191919]">
           <tr className="text-gray-400">
             <th className="text-left px-6 py-5">Coin</th>
@@ -67,7 +67,7 @@ export default function CoinTable({ coins }) {
             ))
           )}
         </tbody>
-      </table>
+      </table></div>
     </div>
   );
 }

@@ -17,7 +17,7 @@ export default function Register() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
 
@@ -31,7 +31,7 @@ export default function Register() {
     }
 
     setSubmitting(true);
-    const result = register(form);
+    const result = await register(form);
     setSubmitting(false);
 
     if (!result.success) {

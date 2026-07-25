@@ -20,6 +20,8 @@ export default function Trading() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
+  if (trade.loading || !trade.selectedCoin?.id) return <div className="py-20 text-center text-gray-400">Loading live market data...</div>;
+
   return (
     <div className="space-y-10">
       <PageHeader

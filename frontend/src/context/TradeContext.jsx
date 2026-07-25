@@ -1,157 +1,20 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import baseCoins from "../data/coins";
-import { buyCoin as validateBuy, sellCoin as validateSell } from "../services/tradeService";
-import { addHolding, removeHolding } from "../services/PortfolioService";
-import { calculateRealizedProfit } from "../utils/calculateProfit";
+/* eslint-disable react-hooks/set-state-in-effect */
+import { createContext, useContext, useCallback, useEffect, useState } from "react";
+import api from "../services/api";
+import { io } from "socket.io-client";
+import { useAuthContext } from "./AuthContext";
 
 const TradeContext = createContext();
-
-const STORAGE_KEY = "cryptoweb_trade_state";
-const STARTING_WALLET = 10000;
-
-function loadState() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!saved) return null;
-    return saved;
-  } catch {
-    return null;
-  }
-}
-
 export function TradeProvider({ children }) {
-  const saved = loadState();
-
-  const [coins, setCoins] = useState(saved?.coins || baseCoins);
-  const [wallet, setWallet] = useState(saved?.wallet ?? STARTING_WALLET);
-  const [portfolio, setPortfolio] = useState(saved?.portfolio || []);
-  const [transactions, setTransactions] = useState(saved?.transactions || []);
-  const [realizedProfit, setRealizedProfit] = useState(saved?.realizedProfit || 0);
-
-  // Persist everything whenever it changes.
-  useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ coins, wallet, portfolio, transactions, realizedProfit })
-    );
-  }, [coins, wallet, portfolio, transactions, realizedProfit]);
-
-  // Simulate a live market: gently randomwalk each coin's price every few seconds.
-  const tickRef = useRef();
-  useEffect(() => {
-    tickRef.current = setInterval(() => {
-      setCoins((prev) =>
-        prev.map((coin) => {
-          const driftPercent = (Math.random() - 0.5) * 0.6; // +/-0.3%
-          const newPrice = Math.max(0.01, coin.price * (1 + driftPercent / 100));
-          const newChange = coin.change + driftPercent;
-          return {
-            ...coin,
-            price: Number(newPrice.toFixed(newPrice < 10 ? 4 : 2)),
-            change: Number(newChange.toFixed(2)),
-          };
-        })
-      );
-    }, 4000);
-
-    return () => clearInterval(tickRef.current);
-  }, []);
-
-  function getCoin(symbol) {
-    return coins.find((c) => c.symbol === symbol);
-  }
-
-  function buy(symbol, quantityInput) {
-    const coin = getCoin(symbol);
-    const quantity = Number(quantityInput);
-    const total = coin ? coin.price * quantity : 0;
-
-    const validation = validateBuy({ wallet, total, quantity });
-    if (!validation.success) return validation;
-
-    setWallet((w) => Number((w - total).toFixed(2)));
-    setPortfolio((p) => addHolding(p, coin, quantity, coin.price));
-    setTransactions((t) => [
-      {
-        id: Date.now(),
-        date: new Date().toISOString(),
-        coin: coin.name,
-        symbol: coin.symbol,
-        type: "BUY",
-        quantity,
-        price: coin.price,
-        total,
-      },
-      ...t,
-    ]);
-
-    return { success: true, message: `Bought ${quantity} ${coin.symbol}` };
-  }
-
-  function sell(symbol, quantityInput) {
-    const coin = getCoin(symbol);
-    const quantity = Number(quantityInput);
-    const holding = portfolio.find((p) => p.symbol === symbol);
-
-    const validation = validateSell({ holding, quantity });
-    if (!validation.success) return validation;
-
-    const total = coin.price * quantity;
-    const profit = calculateRealizedProfit(holding.avgBuyPrice, coin.price, quantity);
-
-    setWallet((w) => Number((w + total).toFixed(2)));
-    setPortfolio((p) => removeHolding(p, coin, quantity));
-    setRealizedProfit((r) => Number((r + profit).toFixed(2)));
-    setTransactions((t) => [
-      {
-        id: Date.now(),
-        date: new Date().toISOString(),
-        coin: coin.name,
-        symbol: coin.symbol,
-        type: "SELL",
-        quantity,
-        price: coin.price,
-        total,
-        profit,
-      },
-      ...t,
-    ]);
-
-    return { success: true, message: `Sold ${quantity} ${coin.symbol}` };
-  }
-
-  function resetAccount() {
-    setWallet(STARTING_WALLET);
-    setPortfolio([]);
-    setTransactions([]);
-    setRealizedProfit(0);
-    setCoins(baseCoins);
-  }
-
-  return (
-    <TradeContext.Provider
-      value={{
-        coins,
-        wallet,
-        portfolio,
-        transactions,
-        realizedProfit,
-        getCoin,
-        buy,
-        sell,
-        resetAccount,
-        // legacy setters kept for backward compatibility with older components
-        setWallet,
-        setPortfolio,
-        setTransactions,
-      }}
-    >
-      {children}
-    </TradeContext.Provider>
-  );
+  const { user, loading: authLoading } = useAuthContext();
+  const [coins, setCoins] = useState([]); const [wallet, setWallet] = useState(0); const [portfolio, setPortfolio] = useState([]); const [transactions, setTransactions] = useState([]); const [realizedProfit, setRealizedProfit] = useState(0); const [loading, setLoading] = useState(true);
+  const hydrate = useCallback(async () => { try { const [market, summary] = await Promise.all([api.get("/market/top"), api.get("/trades/summary")]); const data = summary.data.summary; setCoins(market.data.coins.map((coin) => ({ ...coin, change: coin.change24h }))); setWallet(data.walletBalance); setPortfolio(data.holdings.map((item) => ({ ...item, id: item._id, avgBuyPrice: item.averageBuyPrice }))); setTransactions(data.recentTrades.map((item) => ({ ...item, id: item._id, date: item.createdAt, coin: item.name, total: item.totalValue, profit: item.realizedProfit, type: item.type.toUpperCase() }))); setRealizedProfit(data.realizedProfit); } finally { setLoading(false); } }, []);
+  useEffect(() => { if (!user) { setCoins([]); setWallet(0); setPortfolio([]); setTransactions([]); setLoading(false); return; } hydrate().catch(() => setLoading(false)); const interval = setInterval(() => hydrate().catch(() => {}), 30_000); return () => clearInterval(interval); }, [hydrate, user]);
+  useEffect(() => { if (!user) return; const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:5000", { withCredentials: true }); socket.on("market:prices", (nextCoins) => setCoins(nextCoins.map((coin) => ({ ...coin, change: coin.change24h })))); return () => socket.close(); }, [user]);
+  async function execute(type, coinId, quantity) { try { const { data } = await api.post(`/trades/${type}`, { coinId, quantity }); await hydrate(); return { success: true, message: data.message }; } catch (error) { return { success: false, message: error.message || "Trade could not be completed." }; } }
+  const buy = (coinId, quantity) => execute("buy", coinId, quantity); const sell = (coinId, quantity) => execute("sell", coinId, quantity);
+  async function resetAccount() { try { const { data } = await api.post("/portfolio/reset"); await hydrate(); return { success: true, message: data.message }; } catch (error) { return { success: false, message: error.message }; } }
+  return <TradeContext.Provider value={{ coins, wallet, portfolio, transactions, realizedProfit, loading: loading || authLoading, getCoin: (id) => coins.find((coin) => coin.id === id || coin.symbol === id), buy, sell, resetAccount, refresh: hydrate }}>{children}</TradeContext.Provider>;
 }
-
 // eslint-disable-next-line react-refresh/only-export-components
-export function useTradeContext() {
-  return useContext(TradeContext);
-}
+export function useTradeContext() { return useContext(TradeContext); }
