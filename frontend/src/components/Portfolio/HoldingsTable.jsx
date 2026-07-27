@@ -1,6 +1,6 @@
 import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6";
 
-export default function HoldingsTable({ portfolio, coins }) {
+export default function HoldingsTable({ portfolio }) {
   if (portfolio.length === 0) {
     return (
       <div className="bg-[#111111] border border-[#242424] rounded-3xl p-12 text-center">
@@ -31,22 +31,17 @@ export default function HoldingsTable({ portfolio, coins }) {
       </div>
 
       {portfolio.map((item) => {
-        const marketCoin = coins.find(
-          (coin) => coin.symbol === item.symbol
-        );
+        const currentPrice = item.currentPrice;
 
-        const currentPrice = marketCoin
-          ? marketCoin.price
-          : item.price;
+const avgBuy = item.averageBuyPrice;
 
-        const avgBuy = item.invested / item.quantity;
+const currentValue = item.currentValue;
 
-        const currentValue = currentPrice * item.quantity;
+const invested = item.investedAmount;
 
-        const profit = currentValue - item.invested;
+const profit = item.profitLoss;
 
-        const profitPercent =
-          (profit / item.invested) * 100;
+const profitPercent = item.profitLossPercent;
 
         return (
           <div
@@ -99,7 +94,7 @@ export default function HoldingsTable({ portfolio, coins }) {
 
             <div className="text-center text-gray-300">
               $
-              {item.invested.toLocaleString(undefined, {
+        {invested.toLocaleString(undefined, {
                 maximumFractionDigits: 2,
               })}
             </div>

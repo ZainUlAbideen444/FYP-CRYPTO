@@ -1,4 +1,18 @@
-// Live coin data now lives inside TradeContext, since prices need to stay in
-// sync with the user's portfolio valuation. This file re-exports the same
-// hook so any future code that imports from MarketContext still works.
-export { useTradeContext as useMarketContext } from "./TradeContext";
+import { createContext, useContext } from "react";
+import useMarket from "../hooks/useMarket";
+
+const MarketContext = createContext();
+
+export function MarketProvider({ children }) {
+  const market = useMarket();
+
+  return (
+    <MarketContext.Provider value={market}>
+      {children}
+    </MarketContext.Provider>
+  );
+}
+
+export function useMarketContext() {
+  return useContext(MarketContext);
+}

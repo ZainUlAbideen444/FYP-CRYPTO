@@ -1,7 +1,26 @@
-// Placeholder for live market data. Currently the app simulates prices in
-// TradeContext. Swap this in once CoinGecko integration (roadmap step 9) is
-// wired up on the backend.
+import api from "./api";
 
-export async function fetchLiveCoins() {
-  throw new Error("Live market service not yet connected. Using simulated prices.");
+export async function getTopCoins() {
+  const { data } = await api.get("/market/top");
+  return data;
+}
+
+export async function getMarketCoins() {
+  const { data } = await api.get("/market/top");
+  return data.coins;
+}
+
+export async function getCoin(id) {
+  const { data } = await api.get(`/market/coin/${id}`);
+  return data.coin;
+}
+
+export async function searchCoins(query) {
+  const { data } = await api.get(`/market/search/${query}`);
+  return data.coins;
+}
+
+export async function getChart(id, days = 7) {
+  const { data } = await api.get(`/market/chart/${id}?days=${days}`);
+  return data.prices;
 }

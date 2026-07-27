@@ -44,13 +44,10 @@ export default function Market() {
       {/* Cards */}
       <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6">
         {filteredCoins.map((coin) => (
-          <MarketCard
-            key={coin.symbol}
-            name={coin.name}
-            symbol={coin.symbol}
-            price={coin.price}
-            change={coin.change}
-          />
+        <MarketCard
+  key={coin.id}
+  coin={coin}
+/>
         ))}
       </div>
 

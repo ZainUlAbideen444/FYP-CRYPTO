@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import PageHeader from "../components/UI/PageHeader";
 
 import SummaryCards from "../components/Portfolio/SummaryCards";
@@ -5,60 +7,67 @@ import HoldingsTable from "../components/Portfolio/HoldingsTable";
 import AllocationCard from "../components/Portfolio/AllocationCard";
 import TransactionHistory from "../components/Portfolio/TransactionHistory";
 
-import { useTradeContext } from "../context/TradeContext";
+import {
+  getPortfolioSummary,
+  getHoldings,
+} from "../services/PortfolioService";
+
+import { getTradeHistory } from "../services/tradeService";
 
 export default function Portfolio() {
-  const {
-    wallet,
-    portfolio,
-    transactions,
-    coins,
-  } = useTradeContext();
 
-  // Calculate live portfolio value
-  const portfolioValue = portfolio.reduce((total, asset) => {
-    const liveCoin = coins.find(
-      (coin) => coin.symbol === asset.symbol
+  const [summary, setSummary] = useState(null);
+  const [holdings, setHoldings] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    loadPortfolio();
+  }, []);
+
+  async function loadPortfolio() {
+    try {
+      const summaryData = await getPortfolioSummary();
+      const holdingsData = await getHoldings();
+      const history = await getTradeHistory();
+
+      setSummary(summaryData);
+      setHoldings(holdingsData);
+      setTransactions(history.trades);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  if (!summary)
+    return (
+      <div className="text-center py-20 text-gray-400">
+        Loading Portfolio...
+      </div>
     );
-
-    const currentPrice = liveCoin
-      ? liveCoin.price
-      : asset.price;
-
-    return total + currentPrice * asset.quantity;
-  }, 0);
 
   return (
     <div className="space-y-10">
 
       <PageHeader
         title="Portfolio"
-        subtitle="Track your investments, profits and crypto holdings."
+        subtitle="Track your investments"
       />
-
-      {/* Summary */}
 
       <SummaryCards
-        wallet={wallet}
-        portfolio={portfolio}
-        portfolioValue={portfolioValue}
+        wallet={summary.walletBalance}
+        portfolio={holdings}
+        portfolioValue={summary.holdingsValue}
       />
-
-      {/* Holdings */}
 
       <HoldingsTable
-        portfolio={portfolio}
-        coins={coins}
+        portfolio={holdings}
       />
-
-      {/* Bottom Section */}
 
       <div className="grid xl:grid-cols-5 gap-8">
 
         <div className="xl:col-span-2">
           <AllocationCard
-            portfolio={portfolio}
-            coins={coins}
+            portfolio={summary.allocation}
           />
         </div>
 

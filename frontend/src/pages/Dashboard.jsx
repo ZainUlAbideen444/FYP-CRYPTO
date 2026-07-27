@@ -1,73 +1,87 @@
-import { FaWallet, FaArrowTrendUp, FaChartPie, FaBitcoin } from "react-icons/fa6";
+import { useEffect, useState } from "react";
 
-import DashboardStatCard from "../components/DashboardStatCard";
-import CoinOverview from "../components/CoinOverview";
-import RecentTransactions from "../components/RecentTransactions";
-import { useTradeContext } from "../context/TradeContext";
-import useAuth from "../hooks/useAuth";
-import { formatCurrency, formatPercent } from "../utils/formatCurrency";
-import { calculatePortfolioProfit } from "../utils/calculateProfit";
+import PageHeader from "../components/UI/PageHeader";
+import DashboardStats from "../components/Dashboard/DashboardStats";
+import PortfolioOverview from "../components/Dashboard/PortfolioOverview";
+import MarketOverview from "../components/Dashboard/MarketOverview";
+import RecentTransactions from "../components/Dashboard/RecentTransactions";
+import QuickActions from "../components/Dashboard/QuickActions";
+
+import { useMarketContext } from "../context/MarketContext";
+import { getTradeSummary } from "../services/tradeService";
 
 export default function Dashboard() {
-  const { coins, wallet, portfolio, transactions } = useTradeContext();
-  const { user } = useAuth();
+  const { coins } = useMarketContext();
 
-  const { invested, currentValue, profit } = calculatePortfolioProfit(portfolio, coins);
-  const profitPercent = invested === 0 ? 0 : (profit / invested) * 100;
+  const [loading, setLoading] = useState(true);
 
-  const todaysTransactions = transactions.filter(
-    (t) => new Date(t.date).toDateString() === new Date().toDateString()
-  );
-  const todaysProfit = todaysTransactions
-    .filter((t) => t.type === "SELL")
-    .reduce((sum, t) => sum + (t.profit || 0), 0);
+  const [wallet, setWallet] = useState(0);
+  const [portfolio, setPortfolio] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [portfolioValue, setPortfolioValue] = useState(0);
+
+  useEffect(() => {
+    loadDashboard();
+  }, []);
+
+  async function loadDashboard() {
+    try {
+      const data = await getTradeSummary();
+
+      const summary = data.summary;
+
+      setWallet(summary.walletBalance);
+      setPortfolio(summary.holdings);
+      setTransactions(summary.recentTrades);
+      setPortfolioValue(summary.holdingsValue);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="py-24 text-center text-gray-400">
+        Loading Dashboard...
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-10">
-      <div>
-        <h1 className="text-white text-4xl font-black">Dashboard</h1>
-        <p className="text-gray-400 mt-2">
-          Welcome back, {user?.name || "Trader"}. Here's your trading snapshot.
-        </p>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        title="Dashboard"
+        subtitle="Welcome back! Monitor your portfolio and market performance."
+      />
 
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-7">
-        <DashboardStatCard
-          title="Wallet Balance"
-          value={formatCurrency(wallet)}
-          change="Cash Available"
-          icon={<FaWallet />}
-          color="bg-green-600 text-white"
-        />
+     <DashboardStats
+    wallet={wallet}
+    portfolio={portfolio}
+    portfolioValue={portfolioValue}
+/>
 
-        <DashboardStatCard
-          title="Portfolio Value"
-          value={formatCurrency(currentValue)}
-          change={formatPercent(profitPercent)}
-          icon={<FaChartPie />}
-          color="bg-red-600 text-white"
-        />
+      <div className="grid xl:grid-cols-3 gap-8">
+        <div className="xl:col-span-2">
+          <PortfolioOverview
+            portfolio={portfolio}
+          />
+        </div>
 
-        <DashboardStatCard
-          title="Today's Profit"
-          value={formatCurrency(todaysProfit)}
-          change={`${todaysTransactions.length} trade${todaysTransactions.length === 1 ? "" : "s"} today`}
-          icon={<FaArrowTrendUp />}
-          color="bg-blue-600 text-white"
-        />
-
-        <DashboardStatCard
-          title="Coins Owned"
-          value={portfolio.length}
-          change={`${transactions.length} total trades`}
-          icon={<FaBitcoin />}
-          color="bg-yellow-500 text-white"
+        <MarketOverview
+          coins={coins}
         />
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
-        <CoinOverview coins={coins} />
-        <RecentTransactions transactions={transactions} />
+      <div className="grid xl:grid-cols-3 gap-8">
+        <div className="xl:col-span-2">
+          <RecentTransactions
+            transactions={transactions}
+          />
+        </div>
+
+        <QuickActions />
       </div>
     </div>
   );

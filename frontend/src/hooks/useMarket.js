@@ -1,19 +1,47 @@
-import { useMemo, useState } from "react";
-import { useTradeContext } from "../context/TradeContext";
+import { useEffect, useMemo, useState } from "react";
+import { getMarketCoins } from "../services/marketService";
 
 export default function useMarket() {
-  const { coins } = useTradeContext();
+  const [coins, setCoins] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
+  async function loadCoins() {
+    try {
+      const result = await getMarketCoins();
+      setCoins(result);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadCoins();
+
+    const interval = setInterval(loadCoins, 20000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const filteredCoins = useMemo(() => {
-    if (!search.trim()) return coins;
-    const query = search.toLowerCase();
-    return coins.filter(
-      (coin) =>
-        coin.name.toLowerCase().includes(query) ||
-        coin.symbol.toLowerCase().includes(query)
-    );
+    return coins.filter((coin) => {
+      const value = search.toLowerCase();
+
+      return (
+        coin.name.toLowerCase().includes(value) ||
+        coin.symbol.toLowerCase().includes(value)
+      );
+    });
   }, [coins, search]);
 
-  return { coins, filteredCoins, search, setSearch };
+  return {
+    coins,
+    filteredCoins,
+    loading,
+    search,
+    setSearch,
+    refresh: loadCoins,
+  };
 }

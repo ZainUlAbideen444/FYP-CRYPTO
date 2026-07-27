@@ -1,25 +1,33 @@
-// Validates and prepares a BUY order. Pure function — no side effects.
-export function buyCoin({ wallet, total, quantity }) {
-  if (!quantity || Number(quantity) <= 0) {
-    return { success: false, message: "Enter a valid quantity." };
-  }
+import api from "./api";
 
-  if (wallet < total) {
-    return { success: false, message: "Insufficient balance to complete this purchase." };
-  }
+// BUY COIN
+export const buyCoin = async (coinId, quantity) => {
+  const { data } = await api.post("/trades/buy", {
+    coinId,
+    quantity,
+  });
 
-  return { success: true };
-}
+  return data;
+};
 
-// Validates a SELL order against the user's current holding.
-export function sellCoin({ holding, quantity }) {
-  if (!quantity || Number(quantity) <= 0) {
-    return { success: false, message: "Enter a valid quantity." };
-  }
+// SELL COIN
+export const sellCoin = async (coinId, quantity) => {
+  const { data } = await api.post("/trades/sell", {
+    coinId,
+    quantity,
+  });
 
-  if (!holding || holding.quantity < Number(quantity)) {
-    return { success: false, message: "You don't own enough of this coin to sell that amount." };
-  }
+  return data;
+};
 
-  return { success: true };
-}
+// HISTORY
+export const getTradeHistory = async () => {
+  const { data } = await api.get("/trades/history");
+  return data;
+};
+
+// DASHBOARD SUMMARY
+export const getTradeSummary = async () => {
+  const { data } = await api.get("/trades/summary");
+  return data;
+};

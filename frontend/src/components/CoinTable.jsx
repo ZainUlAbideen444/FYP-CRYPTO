@@ -27,7 +27,7 @@ export default function CoinTable({ coins }) {
             </tr>
           ) : (
             coins.map((coin) => (
-              <tr key={coin.symbol} className="border-t border-[#222] hover:bg-[#181818]">
+              <tr key={coin.id} className="border-t border-[#222] hover:bg-[#181818]">
                 <td className="px-6 py-6">
                   <div className="flex items-center gap-4">
                     <FaStar className="text-gray-500" />
@@ -42,14 +42,14 @@ export default function CoinTable({ coins }) {
 
                 <td
                   className={`text-center font-semibold ${
-                    coin.change >= 0 ? "text-green-500" : "text-red-500"
+                    coin.change24h >= 0 ? "text-green-500" : "text-red-500"
                   }`}
                 >
                   {formatPercent(coin.change)}
                 </td>
 
                 <td className="text-center text-white">
-                  {coin.marketCap || `$${formatNumber(coin.price * 19000000, 0)}`}
+                 {formatCurrency(coin.marketCap)}
                 </td>
 
                 <td>
