@@ -15,6 +15,7 @@ export default function TradingInsights({
       <div className="bg-[#111111] border border-[#242424] rounded-3xl p-8">
         <div className="flex items-center gap-3 mb-6">
           <FaLightbulb className="text-yellow-400 text-2xl" />
+
           <h2 className="text-2xl font-bold text-white">
             Trading Insights
           </h2>
@@ -28,12 +29,17 @@ export default function TradingInsights({
   }
 
   const assets = portfolio.map((asset) => {
-    const liveCoin =
-      coins.find((c) => c.symbol === asset.symbol) || asset;
+    const liveCoin = coins.find(
+      (coin) => coin.symbol === asset.symbol
+    );
+
+    const currentPrice =
+      liveCoin?.price || asset.averageBuyPrice || 0;
 
     return {
       ...asset,
-      value: liveCoin.price * asset.quantity,
+      invested: asset.investedAmount || 0,
+      value: currentPrice * asset.quantity,
     };
   });
 
@@ -41,17 +47,6 @@ export default function TradingInsights({
     (sum, asset) => sum + asset.value,
     0
   );
-
-  const largestHolding = assets.reduce((a, b) =>
-    a.value > b.value ? a : b
-  );
-
-  const allocation = (
-    (largestHolding.value / portfolioValue) *
-    100
-  ).toFixed(1);
-
-  const diversified = assets.length >= 4;
 
   const totalInvested = assets.reduce(
     (sum, asset) => sum + asset.invested,
@@ -65,6 +60,20 @@ export default function TradingInsights({
       ? ((profit / totalInvested) * 100).toFixed(2)
       : "0.00";
 
+  const largestHolding = assets.reduce((a, b) =>
+    a.value > b.value ? a : b
+  );
+
+  const allocation =
+    portfolioValue > 0
+      ? (
+          (largestHolding.value / portfolioValue) *
+          100
+        ).toFixed(1)
+      : "0.0";
+
+  const diversified = assets.length >= 4;
+
   const insights = [
     {
       icon: <FaBitcoin />,
@@ -77,7 +86,7 @@ export default function TradingInsights({
       title: "Diversification",
       value: diversified
         ? "Well Diversified"
-        : "Consider Adding More Assets",
+        : "Needs More Diversification",
       color: diversified
         ? "text-green-400"
         : "text-orange-400",
@@ -94,7 +103,9 @@ export default function TradingInsights({
     {
       icon: <FaLightbulb />,
       title: "Wallet Balance",
-      value: `$${wallet.toLocaleString()}`,
+      value: `$${wallet.toLocaleString(undefined, {
+        maximumFractionDigits: 2,
+      })}`,
       color: "text-blue-400",
     },
   ];

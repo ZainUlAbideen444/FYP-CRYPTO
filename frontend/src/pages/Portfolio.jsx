@@ -15,6 +15,7 @@ import {
 import { getTradeHistory } from "../services/tradeService";
 
 export default function Portfolio() {
+  const [loading, setLoading] = useState(true);
 
   const [summary, setSummary] = useState(null);
   const [holdings, setHoldings] = useState([]);
@@ -26,24 +27,38 @@ export default function Portfolio() {
 
   async function loadPortfolio() {
     try {
-      const summaryData = await getPortfolioSummary();
-      const holdingsData = await getHoldings();
-      const history = await getTradeHistory();
+      const [summaryData, holdingsData, historyData] =
+        await Promise.all([
+          getPortfolioSummary(),
+          getHoldings(),
+          getTradeHistory(),
+        ]);
 
-      setSummary(summaryData);
-      setHoldings(holdingsData);
-      setTransactions(history.trades);
+      setSummary(summaryData.summary || summaryData);
+
+      setHoldings(
+        holdingsData.holdings ||
+          holdingsData ||
+          []
+      );
+
+      setTransactions(
+        historyData.trades || []
+      );
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   }
 
-  if (!summary)
+  if (loading) {
     return (
-      <div className="text-center py-20 text-gray-400">
+      <div className="py-24 text-center text-gray-400 text-lg">
         Loading Portfolio...
       </div>
     );
+  }
 
   return (
     <div className="space-y-10">
@@ -54,9 +69,9 @@ export default function Portfolio() {
       />
 
       <SummaryCards
-        wallet={summary.walletBalance}
+        wallet={summary?.walletBalance || 0}
         portfolio={holdings}
-        portfolioValue={summary.holdingsValue}
+        portfolioValue={summary?.holdingsValue || 0}
       />
 
       <HoldingsTable
@@ -67,7 +82,7 @@ export default function Portfolio() {
 
         <div className="xl:col-span-2">
           <AllocationCard
-            portfolio={summary.allocation}
+            portfolio={summary?.allocation || []}
           />
         </div>
 

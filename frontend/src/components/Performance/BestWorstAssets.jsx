@@ -38,23 +38,26 @@ export default function BestWorstAssets({
       (coin) => coin.symbol === asset.symbol
     );
 
-    const currentPrice = liveCoin
-      ? liveCoin.price
-      : asset.price;
+    const currentPrice =
+      liveCoin?.price || asset.averageBuyPrice || 0;
+
+    const invested =
+      asset.investedAmount || 0;
 
     const currentValue =
       currentPrice * asset.quantity;
 
     const profit =
-      currentValue - asset.invested;
+      currentValue - invested;
 
     const roi =
-      asset.invested > 0
-        ? (profit / asset.invested) * 100
+      invested > 0
+        ? (profit / invested) * 100
         : 0;
 
     return {
       ...asset,
+      invested,
       currentPrice,
       currentValue,
       profit,
@@ -121,9 +124,28 @@ export default function BestWorstAssets({
 
             <span className="text-white font-semibold">
               $
-              {asset.currentValue.toLocaleString(undefined,{
-                maximumFractionDigits:2
-              })}
+              {asset.currentValue.toLocaleString(
+                undefined,
+                {
+                  maximumFractionDigits: 2,
+                }
+              )}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-gray-400">
+              Invested
+            </span>
+
+            <span className="text-white">
+              $
+              {asset.invested.toLocaleString(
+                undefined,
+                {
+                  maximumFractionDigits: 2,
+                }
+              )}
             </span>
           </div>
 
@@ -141,9 +163,12 @@ export default function BestWorstAssets({
             >
               {asset.profit >= 0 ? "+" : ""}
               $
-              {asset.profit.toLocaleString(undefined,{
-                maximumFractionDigits:2
-              })}
+              {asset.profit.toLocaleString(
+                undefined,
+                {
+                  maximumFractionDigits: 2,
+                }
+              )}
             </span>
           </div>
 
@@ -181,13 +206,13 @@ export default function BestWorstAssets({
   return (
     <div className="grid lg:grid-cols-2 gap-6">
       <AssetCard
-        title="Best Performing"
+        title="Best Performing Asset"
         asset={best}
         positive={true}
       />
 
       <AssetCard
-        title="Worst Performing"
+        title="Worst Performing Asset"
         asset={worst}
         positive={false}
       />

@@ -1,5 +1,5 @@
-export default function AllocationCard({ portfolio, coins }) {
-  if (portfolio.length === 0) {
+export default function AllocationCard({ portfolio = [] }) {
+  if (!portfolio.length) {
     return (
       <div className="bg-[#111111] border border-[#242424] rounded-3xl p-8">
         <h2 className="text-xl font-bold text-white mb-4">
@@ -13,25 +13,9 @@ export default function AllocationCard({ portfolio, coins }) {
     );
   }
 
-  const allocation = portfolio.map((asset) => {
-    const marketCoin = coins.find(
-      (coin) => coin.symbol === asset.symbol
-    );
-
-    const currentPrice = marketCoin
-      ? marketCoin.price
-      : asset.price;
-
-    const value = currentPrice * asset.quantity;
-
-    return {
-      ...asset,
-      value,
-    };
-  });
-
-  const totalValue = allocation.reduce(
-    (sum, coin) => sum + coin.value,
+  const totalValue = portfolio.reduce(
+    (sum, asset) =>
+      sum + Number(asset.value || asset.currentValue || 0),
     0
   );
 
@@ -47,7 +31,7 @@ export default function AllocationCard({ portfolio, coins }) {
 
   return (
     <div className="bg-[#111111] border border-[#242424] rounded-3xl p-8">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex justify-between items-center mb-8">
         <h2 className="text-2xl font-bold text-white">
           Portfolio Allocation
         </h2>
@@ -58,27 +42,33 @@ export default function AllocationCard({ portfolio, coins }) {
       </div>
 
       <div className="space-y-6">
-        {allocation.map((coin, index) => {
+        {portfolio.map((asset, index) => {
+          const value = Number(
+            asset.value || asset.currentValue || 0
+          );
+
           const percent =
-            (coin.value / totalValue) * 100;
+            totalValue > 0
+              ? (value / totalValue) * 100
+              : 0;
 
           return (
-            <div key={coin.symbol}>
+            <div key={asset._id || asset.symbol}>
               <div className="flex justify-between items-center mb-2">
                 <div>
                   <h3 className="text-white font-semibold">
-                    {coin.name}
+                    {asset.name}
                   </h3>
 
                   <p className="text-gray-500 text-sm">
-                    {coin.symbol}
+                    {asset.symbol}
                   </p>
                 </div>
 
                 <div className="text-right">
                   <p className="text-white font-semibold">
                     $
-                    {coin.value.toLocaleString(undefined, {
+                    {value.toLocaleString(undefined, {
                       maximumFractionDigits: 2,
                     })}
                   </p>

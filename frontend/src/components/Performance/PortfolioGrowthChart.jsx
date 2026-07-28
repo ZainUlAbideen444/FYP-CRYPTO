@@ -34,40 +34,34 @@ export default function PortfolioGrowthChart({
     "Today",
   ];
 
-  // Simulated history based on current value
-  const values = [
-    portfolioValue * 0.72,
-    portfolioValue * 0.78,
-    portfolioValue * 0.75,
-    portfolioValue * 0.83,
-    portfolioValue * 0.88,
-    portfolioValue * 0.94,
-    portfolioValue,
-  ];
+  const currentValue = Number(portfolioValue) || 0;
+
+  // Temporary simulated history
+  const values = currentValue
+    ? [
+        currentValue * 0.72,
+        currentValue * 0.78,
+        currentValue * 0.75,
+        currentValue * 0.83,
+        currentValue * 0.88,
+        currentValue * 0.94,
+        currentValue,
+      ]
+    : [0, 0, 0, 0, 0, 0, 0];
 
   const data = {
     labels,
-
     datasets: [
       {
         label: "Portfolio Value",
-
         data: values,
-
         borderColor: "#ef4444",
-
-        backgroundColor: "rgba(239,68,68,.15)",
-
+        backgroundColor: "rgba(239,68,68,0.15)",
         borderWidth: 3,
-
         fill: true,
-
         tension: 0.4,
-
         pointRadius: 5,
-
         pointHoverRadius: 7,
-
         pointBackgroundColor: "#ef4444",
       },
     ],
@@ -75,16 +69,20 @@ export default function PortfolioGrowthChart({
 
   const options = {
     responsive: true,
-
     maintainAspectRatio: false,
 
     plugins: {
       legend: {
         display: false,
       },
-
       tooltip: {
-        backgroundColor: "#111",
+        backgroundColor: "#111111",
+        callbacks: {
+          label: (context) =>
+            `$${context.parsed.y.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+            })}`,
+        },
       },
     },
 
@@ -93,19 +91,20 @@ export default function PortfolioGrowthChart({
         ticks: {
           color: "#9ca3af",
         },
-
         grid: {
-          color: "#222",
+          color: "#222222",
         },
       },
-
       y: {
         ticks: {
           color: "#9ca3af",
+          callback: (value) =>
+            `$${Number(value).toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })}`,
         },
-
         grid: {
-          color: "#222",
+          color: "#222222",
         },
       },
     },

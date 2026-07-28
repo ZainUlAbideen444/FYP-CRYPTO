@@ -32,9 +32,9 @@ export default function Performance() {
   }, 0);
 
   const invested = portfolio.reduce(
-    (sum, asset) => sum + asset.invested,
-    0
-  );
+  (sum, asset) => sum + asset.investedAmount,
+  0
+);
 
   return (
     <div className="space-y-8">

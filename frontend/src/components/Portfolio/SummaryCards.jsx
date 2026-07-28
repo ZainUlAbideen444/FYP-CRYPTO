@@ -6,26 +6,30 @@ import {
 } from "react-icons/fa6";
 
 export default function SummaryCards({
-  wallet,
-  portfolio,
-  portfolioValue,
+  wallet = 0,
+  portfolio = [],
+  portfolioValue = 0,
 }) {
   const totalInvested = portfolio.reduce(
-    (sum, coin) => sum + coin.invested,
+    (sum, coin) =>
+      sum + Number(coin.investedAmount || coin.invested || 0),
     0
   );
 
   const profit = portfolioValue - totalInvested;
 
   const totalCoins = portfolio.reduce(
-    (sum, coin) => sum + coin.quantity,
+    (sum, coin) =>
+      sum + Number(coin.quantity || 0),
     0
   );
 
   const cards = [
     {
       title: "Wallet Balance",
-      value: `$${wallet.toLocaleString()}`,
+      value: `$${wallet.toLocaleString(undefined, {
+        maximumFractionDigits: 2,
+      })}`,
       icon: <FaWallet />,
       color: "text-blue-400",
       bg: "bg-blue-500/10",
@@ -41,16 +45,25 @@ export default function SummaryCards({
     },
     {
       title: "Profit / Loss",
-      value: `${profit >= 0 ? "+" : ""}$${profit.toLocaleString(undefined, {
-        maximumFractionDigits: 2,
-      })}`,
+      value: `${profit >= 0 ? "+" : ""}$${profit.toLocaleString(
+        undefined,
+        {
+          maximumFractionDigits: 2,
+        }
+      )}`,
       icon: <FaArrowTrendUp />,
-      color: profit >= 0 ? "text-green-400" : "text-red-400",
-      bg: profit >= 0 ? "bg-green-500/10" : "bg-red-500/10",
+      color:
+        profit >= 0
+          ? "text-green-400"
+          : "text-red-400",
+      bg:
+        profit >= 0
+          ? "bg-green-500/10"
+          : "bg-red-500/10",
     },
     {
       title: "Assets Owned",
-      value: totalCoins,
+      value: portfolio.length,
       icon: <FaCoins />,
       color: "text-yellow-400",
       bg: "bg-yellow-500/10",
@@ -62,7 +75,7 @@ export default function SummaryCards({
       {cards.map((card) => (
         <div
           key={card.title}
-          className="bg-[#111111] border border-[#242424] rounded-3xl p-6 transition-all duration-300 hover:border-red-500/40 hover:-translate-y-1"
+          className="bg-[#111111] border border-[#242424] rounded-3xl p-6 hover:border-red-500/40 transition-all duration-300 hover:-translate-y-1"
         >
           <div className="flex justify-between items-center mb-6">
             <div
@@ -71,14 +84,14 @@ export default function SummaryCards({
               {card.icon}
             </div>
 
-            <span className="text-xs uppercase tracking-widest text-gray-500">
-              Crypto Web
+            <span className="text-xs uppercase tracking-wider text-gray-500">
+              LIVE
             </span>
           </div>
 
-          <h4 className="text-gray-400 text-sm mb-2">
+          <h3 className="text-gray-400 text-sm mb-2">
             {card.title}
-          </h4>
+          </h3>
 
           <h2 className={`text-3xl font-black ${card.color}`}>
             {card.value}

@@ -35,24 +35,22 @@ export default function AssetAllocationChart({
   const values = [];
 
   portfolio.forEach((asset) => {
-    const coin = coins.find(
-      (c) => c.symbol === asset.symbol
+    const liveCoin = coins.find(
+      (coin) => coin.symbol === asset.symbol
     );
 
-    const price = coin ? coin.price : asset.price;
+    const currentPrice = liveCoin?.price || asset.averageBuyPrice || 0;
 
     labels.push(asset.symbol);
 
-    values.push(price * asset.quantity);
+    values.push(currentPrice * asset.quantity);
   });
 
   const data = {
     labels,
-
     datasets: [
       {
         data: values,
-
         backgroundColor: [
           "#ef4444",
           "#3b82f6",
@@ -61,10 +59,11 @@ export default function AssetAllocationChart({
           "#8b5cf6",
           "#14b8a6",
           "#f97316",
+          "#ec4899",
+          "#06b6d4",
+          "#84cc16",
         ],
-
         borderColor: "#111111",
-
         borderWidth: 3,
       },
     ],
@@ -72,7 +71,6 @@ export default function AssetAllocationChart({
 
   const options = {
     responsive: true,
-
     maintainAspectRatio: false,
 
     plugins: {
@@ -81,9 +79,7 @@ export default function AssetAllocationChart({
 
         labels: {
           color: "#ffffff",
-
           padding: 20,
-
           font: {
             size: 13,
           },
@@ -92,6 +88,17 @@ export default function AssetAllocationChart({
 
       tooltip: {
         backgroundColor: "#111111",
+
+        callbacks: {
+          label: function (context) {
+            return `${context.label}: $${context.parsed.toLocaleString(
+              undefined,
+              {
+                maximumFractionDigits: 2,
+              }
+            )}`;
+          },
+        },
       },
     },
   };

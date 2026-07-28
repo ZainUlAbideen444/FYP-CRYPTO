@@ -12,15 +12,18 @@ export default function PerformanceStats({
 }) {
   const profit = portfolioValue - invested;
 
+  // ROI as a number
   const roi =
     invested > 0
-      ? ((profit / invested) * 100).toFixed(2)
-      : "0.00";
+      ? (profit / invested) * 100
+      : 0;
 
   const stats = [
     {
       title: "Wallet Balance",
-      value: `$${wallet.toLocaleString()}`,
+      value: `$${wallet.toLocaleString(undefined, {
+        maximumFractionDigits: 2,
+      })}`,
       icon: <FaWallet />,
       color: "text-blue-400",
       bg: "bg-blue-500/10",
@@ -54,7 +57,7 @@ export default function PerformanceStats({
     },
     {
       title: "ROI",
-      value: `${roi}%`,
+      value: `${roi.toFixed(2)}%`,
       icon: <FaPercent />,
       color:
         roi >= 0
