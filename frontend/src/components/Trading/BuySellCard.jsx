@@ -52,7 +52,7 @@ export default function BuySellCard({ type, trade }) {
         </label>
 
         <select
-          value={trade.selectedCoin.id}
+         value={trade.selectedCoin?.id || ""}
           onChange={(e) => {
             const coin = trade.coins.find(
               (c) => c.id === Number(e.target.value)

@@ -10,29 +10,41 @@ import Footer from "../components/Footer";
 
 export default function Landing() {
   return (
-    <div className="bg-[#050505]">
+    <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
 
       <Navbar />
 
-      <div className="pt-20">
+      <main className="pt-24">
 
         <MarketTicker />
 
-        <Hero />
+        <section className="max-w-7xl mx-auto px-6">
+          <Hero />
+        </section>
 
-        <Stats />
+        <section className="max-w-7xl mx-auto px-6 py-20">
+          <Stats />
+        </section>
 
-        <Features />
+        <section className="max-w-7xl mx-auto px-6 py-20">
+          <Features />
+        </section>
 
-        <HowItWorks />
+        <section className="max-w-7xl mx-auto px-6 py-20">
+          <HowItWorks />
+        </section>
 
-        <WhyChoose />
+        <section className="max-w-7xl mx-auto px-6 py-20">
+          <WhyChoose />
+        </section>
 
-        <CTA />
+        <section className="max-w-7xl mx-auto px-6 py-20">
+          <CTA />
+        </section>
 
-        <Footer />
+      </main>
 
-      </div>
+      <Footer />
 
     </div>
   );

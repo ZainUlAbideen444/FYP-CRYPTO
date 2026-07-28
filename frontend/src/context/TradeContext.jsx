@@ -14,6 +14,8 @@ import {
   sellCoin,
 } from "../services/tradeService";
 
+import { resetPortfolio } from "../services/PortfolioService";
+
 const TradeContext = createContext();
 
 export function TradeProvider({ children }) {
@@ -64,7 +66,9 @@ export function TradeProvider({ children }) {
     } catch (err) {
       return {
         success: false,
-        message: err.message,
+        message:
+          err.response?.data?.message ||
+          err.message,
       };
     }
   }
@@ -82,7 +86,29 @@ export function TradeProvider({ children }) {
     } catch (err) {
       return {
         success: false,
-        message: err.message,
+        message:
+          err.response?.data?.message ||
+          err.message,
+      };
+    }
+  }
+
+  async function resetAccount() {
+    try {
+      const res = await resetPortfolio();
+
+      await refresh();
+
+      return {
+        success: true,
+        message: res.message,
+      };
+    } catch (err) {
+      return {
+        success: false,
+        message:
+          err.response?.data?.message ||
+          err.message,
       };
     }
   }
@@ -98,6 +124,7 @@ export function TradeProvider({ children }) {
         refresh,
         buy,
         sell,
+        resetAccount,
       }}
     >
       {children}

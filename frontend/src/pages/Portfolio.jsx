@@ -82,8 +82,9 @@ export default function Portfolio() {
 
         <div className="xl:col-span-2">
           <AllocationCard
-            portfolio={summary?.allocation || []}
-          />
+    portfolio={holdings}
+    coins={[]}
+/>
         </div>
 
         <div className="xl:col-span-3">

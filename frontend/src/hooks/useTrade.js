@@ -37,14 +37,15 @@ export default function useTrade() {
   }, []);
 
   useEffect(() => {
-    if (!selectedCoin && coins.length) {
+    if (!selectedCoin && coins.length > 0) {
       setSelectedCoin(coins[0]);
     }
   }, [coins, selectedCoin]);
 
   const total = useMemo(() => {
     if (!selectedCoin) return 0;
-    return Number(quantity || 0) * selectedCoin.price;
+
+    return (Number(quantity) || 0) * selectedCoin.price;
   }, [quantity, selectedCoin]);
 
   const ownedQuantity = useMemo(() => {
@@ -55,27 +56,44 @@ export default function useTrade() {
     return holding?.quantity || 0;
   }, [portfolio, selectedCoin]);
 
-  async function handleBuy() {
-    try {
-      const res = await buyCoin(selectedCoin.id, quantity);
+async function handleBuy() {
+  if (!selectedCoin)
+    return;
 
-      setFeedback({
-        type: "success",
-        message: res.message,
-      });
+  const qty = Number(quantity);
 
-      setQuantity("");
-
-      await loadSummary();
-    } catch (err) {
-      setFeedback({
-        type: "error",
-        message: err.message,
-      });
-    }
+  if (!qty || qty <= 0) {
+    setFeedback({
+      type: "error",
+      message: "Enter a valid quantity.",
+    });
+    return;
   }
 
+  try {
+    const res = await buyCoin(selectedCoin.id, qty);
+
+    setFeedback({
+      type: "success",
+      message: res.message,
+    });
+
+    setQuantity("");
+
+    await loadSummary();
+  } catch (err) {
+    setFeedback({
+      type: "error",
+      message:
+        err.response?.data?.message ||
+        err.message,
+    });
+  }
+}
+
   async function handleSell() {
+    if (!selectedCoin) return;
+
     try {
       const res = await sellCoin(selectedCoin.id, quantity);
 
@@ -90,7 +108,7 @@ export default function useTrade() {
     } catch (err) {
       setFeedback({
         type: "error",
-        message: err.message,
+        message: err.message || "Unable to sell coin.",
       });
     }
   }
@@ -100,14 +118,21 @@ export default function useTrade() {
     loading,
     wallet,
     portfolio,
+
     selectedCoin,
     setSelectedCoin,
+
     quantity,
     setQuantity,
+
     total,
     ownedQuantity,
+
     feedback,
+
     handleBuy,
     handleSell,
+
+    refresh: loadSummary,
   };
 }

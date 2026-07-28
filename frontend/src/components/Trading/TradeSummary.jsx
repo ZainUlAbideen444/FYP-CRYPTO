@@ -6,17 +6,17 @@ import {
 } from "react-icons/fa6";
 
 export default function TradeSummary({ trade }) {
-  const portfolioValue = trade.portfolio.reduce(
-    (total, coin) => total + coin.quantity * coin.price,
-    0
-  );
+const portfolioValue = trade.portfolio.reduce(
+  (total, coin) => total + coin.currentValue,
+  0
+);
 
-  const investedValue = trade.portfolio.reduce(
-    (total, coin) => total + coin.invested,
-    0
-  );
+const investedValue = trade.portfolio.reduce(
+  (total, coin) => total + coin.investedAmount,
+  0
+);
 
-  const profitLoss = portfolioValue - investedValue;
+const profitLoss = portfolioValue - investedValue;
 
   return (
     <div className="space-y-6">
