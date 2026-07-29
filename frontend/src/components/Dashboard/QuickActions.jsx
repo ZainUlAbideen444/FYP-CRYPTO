@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-
 import {
   FaArrowRightArrowLeft,
   FaChartPie,
@@ -10,64 +9,65 @@ import {
 const actions = [
   {
     title: "Trade Crypto",
-    description: "Buy and sell cryptocurrencies.",
+    description: "Execute market buys and sells.",
     icon: <FaArrowRightArrowLeft />,
     link: "/trading",
-    color: "bg-red-600",
+    iconBg: "bg-emerald-500/10 border-emerald-500/20 text-emerald-400",
   },
   {
     title: "View Portfolio",
-    description: "Track your crypto holdings.",
+    description: "Track your current coin holdings.",
     icon: <FaChartPie />,
     link: "/portfolio",
-    color: "bg-blue-600",
+    iconBg: "bg-teal-500/10 border-teal-500/20 text-teal-400",
   },
   {
-    title: "Market",
-    description: "Browse live market prices.",
+    title: "Markets",
+    description: "Browse live CoinGecko prices.",
     icon: <FaChartLine />,
     link: "/market",
-    color: "bg-green-600",
+    iconBg: "bg-cyan-500/10 border-cyan-500/20 text-cyan-400",
   },
   {
-    title: "Wallet",
-    description: "Check your virtual balance.",
+    title: "Virtual Wallet",
+    description: "Check available trading cash.",
     icon: <FaWallet />,
     link: "/portfolio",
-    color: "bg-yellow-600",
+    iconBg: "bg-amber-500/10 border-amber-500/20 text-amber-400",
   },
 ];
 
 export default function QuickActions() {
   return (
-    <div className="bg-[#111111] border border-[#242424] rounded-3xl p-8 h-full">
-      <h2 className="text-2xl font-bold text-white mb-2">
-        Quick Actions
-      </h2>
+    <div className="rounded-2xl border border-slate-800/80 bg-[#11151F]/90 p-6 backdrop-blur-xl shadow-lg h-full">
+      <div className="border-b border-slate-800/80 pb-4 mb-5">
+        <h2 className="text-xl font-bold text-white tracking-tight">
+          Quick Actions
+        </h2>
+        <p className="text-slate-400 text-xs font-medium mt-1">
+          Fast shortcuts for core trading tools
+        </p>
+      </div>
 
-      <p className="text-gray-500 mb-8">
-        Navigate quickly through your trading dashboard.
-      </p>
-
-      <div className="space-y-5">
+      <div className="space-y-3">
         {actions.map((action) => (
           <Link
             key={action.title}
             to={action.link}
-            className="group flex items-center gap-5 p-5 rounded-2xl bg-[#181818] border border-[#242424] hover:border-red-500/50 transition-all duration-300 hover:-translate-y-1"
+            className="group flex items-center gap-4 p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 hover:border-emerald-500/40 hover:bg-slate-900/90 transition-all duration-200"
           >
             <div
-              className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl ${action.color}`}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center text-lg border ${action.iconBg} group-hover:scale-105 transition-transform duration-200`}
             >
               {action.icon}
             </div>
 
-            <div className="flex-1">
-              <h3 className="text-white font-semibold group-hover:text-red-400 transition">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-slate-200 font-bold text-sm group-hover:text-emerald-400 transition-colors tracking-tight">
                 {action.title}
               </h3>
 
-              <p className="text-gray-500 text-sm">
+              <p className="text-slate-400 text-xs truncate">
                 {action.description}
               </p>
             </div>

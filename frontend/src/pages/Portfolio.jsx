@@ -54,18 +54,19 @@ export default function Portfolio() {
 
   if (loading) {
     return (
-      <div className="py-24 text-center text-gray-400 text-lg">
-        Loading Portfolio...
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-slate-400 space-y-4">
+        <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+        <span className="text-xs font-mono tracking-wider uppercase">Loading Portfolio Analytics...</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8 pb-12">
 
       <PageHeader
         title="Portfolio"
-        subtitle="Track your investments"
+        subtitle="Track your crypto asset performance, market allocation, and trade logs."
       />
 
       <SummaryCards
@@ -82,9 +83,9 @@ export default function Portfolio() {
 
         <div className="xl:col-span-2">
           <AllocationCard
-    portfolio={holdings}
-    coins={[]}
-/>
+            portfolio={holdings}
+            coins={[]}
+          />
         </div>
 
         <div className="xl:col-span-3">

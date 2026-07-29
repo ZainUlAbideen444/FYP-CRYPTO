@@ -3,6 +3,7 @@ import {
   FaChartLine,
   FaCoins,
   FaArrowTrendUp,
+  FaArrowTrendDown,
 } from "react-icons/fa6";
 
 export default function SummaryCards({
@@ -18,12 +19,6 @@ export default function SummaryCards({
 
   const profit = portfolioValue - totalInvested;
 
-  const totalCoins = portfolio.reduce(
-    (sum, coin) =>
-      sum + Number(coin.quantity || 0),
-    0
-  );
-
   const cards = [
     {
       title: "Wallet Balance",
@@ -31,8 +26,8 @@ export default function SummaryCards({
         maximumFractionDigits: 2,
       })}`,
       icon: <FaWallet />,
-      color: "text-blue-400",
-      bg: "bg-blue-500/10",
+      color: "text-emerald-400",
+      bg: "bg-emerald-500/10 border-emerald-500/20",
     },
     {
       title: "Portfolio Value",
@@ -40,60 +35,54 @@ export default function SummaryCards({
         maximumFractionDigits: 2,
       })}`,
       icon: <FaChartLine />,
-      color: "text-green-400",
-      bg: "bg-green-500/10",
+      color: "text-cyan-400",
+      bg: "bg-cyan-500/10 border-cyan-500/20",
     },
     {
-      title: "Profit / Loss",
+      title: "Net Profit / Loss",
       value: `${profit >= 0 ? "+" : ""}$${profit.toLocaleString(
         undefined,
         {
           maximumFractionDigits: 2,
         }
       )}`,
-      icon: <FaArrowTrendUp />,
-      color:
-        profit >= 0
-          ? "text-green-400"
-          : "text-red-400",
-      bg:
-        profit >= 0
-          ? "bg-green-500/10"
-          : "bg-red-500/10",
+      icon: profit >= 0 ? <FaArrowTrendUp /> : <FaArrowTrendDown />,
+      color: profit >= 0 ? "text-emerald-400" : "text-rose-400",
+      bg: profit >= 0 ? "bg-emerald-500/10 border-emerald-500/20" : "bg-rose-500/10 border-rose-500/20",
     },
     {
       title: "Assets Owned",
       value: portfolio.length,
       icon: <FaCoins />,
-      color: "text-yellow-400",
-      bg: "bg-yellow-500/10",
+      color: "text-amber-400",
+      bg: "bg-amber-500/10 border-amber-500/20",
     },
   ];
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {cards.map((card) => (
         <div
           key={card.title}
-          className="bg-[#111111] border border-[#242424] rounded-3xl p-6 hover:border-red-500/40 transition-all duration-300 hover:-translate-y-1"
+          className="group rounded-2xl border border-slate-800/80 bg-[#11151F]/90 p-6 backdrop-blur-xl shadow-lg transition-all duration-300 hover:border-slate-700 hover:bg-[#161B27]"
         >
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center mb-4">
             <div
-              className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${card.bg} ${card.color}`}
+              className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl border ${card.bg} ${card.color} transition-transform group-hover:scale-105`}
             >
               {card.icon}
             </div>
 
-            <span className="text-xs uppercase tracking-wider text-gray-500">
+            <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded border border-slate-800 bg-slate-900/80 text-slate-400">
               LIVE
             </span>
           </div>
 
-          <h3 className="text-gray-400 text-sm mb-2">
+          <h3 className="text-slate-400 text-xs font-semibold tracking-wider uppercase mb-1">
             {card.title}
           </h3>
 
-          <h2 className={`text-3xl font-black ${card.color}`}>
+          <h2 className={`text-2xl sm:text-3xl font-extrabold font-mono tracking-tight ${card.color}`}>
             {card.value}
           </h2>
         </div>

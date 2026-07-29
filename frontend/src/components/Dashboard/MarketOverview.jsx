@@ -3,12 +3,11 @@ import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6";
 export default function MarketOverview({ coins }) {
   if (!coins || coins.length === 0) {
     return (
-      <div className="bg-[#111111] border border-[#242424] rounded-3xl p-8">
-        <h2 className="text-2xl font-bold text-white mb-4">
+      <div className="rounded-2xl border border-slate-800/80 bg-[#11151F]/90 p-8 backdrop-blur-xl shadow-lg">
+        <h2 className="text-xl font-bold text-white mb-2 tracking-tight">
           Market Overview
         </h2>
-
-        <p className="text-gray-500">
+        <p className="text-slate-400 text-sm">
           No market data available.
         </p>
       </div>
@@ -29,57 +28,55 @@ export default function MarketOverview({ coins }) {
     .slice(0, 3);
 
   return (
-    <div className="bg-[#111111] border border-[#242424] rounded-3xl p-6 space-y-8">
+    <div className="rounded-2xl border border-slate-800/80 bg-[#11151F]/90 p-6 backdrop-blur-xl shadow-lg space-y-7">
 
-      <div>
-        <h2 className="text-2xl font-bold text-white">
+      {/* Header */}
+      <div className="border-b border-slate-800/80 pb-4">
+        <h2 className="text-xl font-bold text-white tracking-tight">
           Market Overview
         </h2>
-
-        <p className="text-gray-500 text-sm mt-1">
-          Top market movers
+        <p className="text-slate-400 text-xs font-medium mt-1">
+          Top market movers across supported assets
         </p>
       </div>
 
       {/* Top Gainers */}
-
       <div>
-        <h3 className="text-green-400 font-bold mb-4 flex items-center gap-2">
+        <h3 className="text-emerald-400 font-semibold text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
           <FaArrowTrendUp />
           Top Gainers
         </h3>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {topGainers.map((coin) => (
             <div
               key={coin.symbol}
-              className="flex justify-between items-center p-4 rounded-2xl bg-[#181818] border border-[#242424] hover:border-green-500/40 transition"
+              className="flex justify-between items-center p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 hover:border-emerald-500/40 hover:bg-slate-900/90 transition-all duration-200"
             >
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-full bg-green-600 flex items-center justify-center font-bold text-white">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center font-bold text-emerald-400 text-sm">
                   {coin.symbol[0]}
                 </div>
 
                 <div>
-                  <h4 className="text-white font-semibold">
+                  <h4 className="text-white text-sm font-semibold tracking-tight">
                     {coin.name}
                   </h4>
-
-                  <p className="text-gray-500 text-sm">
+                  <p className="text-slate-500 text-xs font-mono uppercase">
                     {coin.symbol}
                   </p>
                 </div>
               </div>
 
               <div className="text-right">
-                <h4 className="text-white font-semibold">
+                <h4 className="text-slate-200 text-sm font-bold font-mono">
                   $
                   {coin.price.toLocaleString(undefined, {
                     maximumFractionDigits: 2,
                   })}
                 </h4>
 
-                <span className="text-green-400 font-bold">
+                <span className="inline-block px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 font-mono text-xs font-bold mt-0.5">
                   +{coin.change}%
                 </span>
               </div>
@@ -89,49 +86,48 @@ export default function MarketOverview({ coins }) {
       </div>
 
       {/* Top Losers */}
-
       <div>
-        <h3 className="text-red-400 font-bold mb-4 flex items-center gap-2">
+        <h3 className="text-rose-400 font-semibold text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
           <FaArrowTrendDown />
           Top Losers
         </h3>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {topLosers.length === 0 ? (
-            <div className="text-gray-500 text-sm">
+            <div className="text-slate-500 text-xs py-2 italic">
               No losing assets right now.
             </div>
           ) : (
             topLosers.map((coin) => (
               <div
                 key={coin.symbol}
-                className="flex justify-between items-center p-4 rounded-2xl bg-[#181818] border border-[#242424] hover:border-red-500/40 transition"
+                className="flex justify-between items-center p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 hover:border-rose-500/40 hover:bg-slate-900/90 transition-all duration-200"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-red-600 flex items-center justify-center font-bold text-white">
+                  <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center font-bold text-rose-400 text-sm">
                     {coin.symbol[0]}
                   </div>
 
                   <div>
-                    <h4 className="text-white font-semibold">
+                    <h4 className="text-white text-sm font-semibold tracking-tight">
                       {coin.name}
                     </h4>
 
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-slate-500 text-xs font-mono uppercase">
                       {coin.symbol}
                     </p>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <h4 className="text-white font-semibold">
+                  <h4 className="text-slate-200 text-sm font-bold font-mono">
                     $
                     {coin.price.toLocaleString(undefined, {
                       maximumFractionDigits: 2,
                     })}
                   </h4>
 
-                  <span className="text-red-400 font-bold">
+                  <span className="inline-block px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-400 font-mono text-xs font-bold mt-0.5">
                     {coin.change}%
                   </span>
                 </div>

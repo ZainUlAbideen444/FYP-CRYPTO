@@ -8,189 +8,162 @@ export default function TransactionHistory({
 }) {
   if (!transactions.length) {
     return (
-      <div className="bg-[#111111] border border-[#242424] rounded-3xl p-8">
-        <h2 className="text-2xl font-bold text-white mb-4">
-          Transaction History
+      <div className="rounded-2xl border border-slate-800/80 bg-[#11151F]/90 p-6 backdrop-blur-xl shadow-lg">
+        <h2 className="text-lg font-bold text-white mb-2">
+          Trade Log History
         </h2>
-
-        <div className="py-12 text-center">
-          <p className="text-gray-500">
-            No transactions available.
-          </p>
-        </div>
+        <p className="py-8 text-center text-slate-400 text-xs">
+          No historical transaction records found.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#111111] border border-[#242424] rounded-3xl overflow-hidden">
+    <div className="rounded-2xl border border-slate-800/80 bg-[#11151F]/90 overflow-hidden backdrop-blur-xl shadow-lg">
 
-      <div className="flex items-center justify-between px-8 py-6 border-b border-[#242424]">
-        <h2 className="text-2xl font-bold text-white">
-          Transaction History
+      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-800/80">
+        <h2 className="text-lg font-bold text-white tracking-tight">
+          Trade Log History
         </h2>
 
-        <span className="text-gray-500 text-sm">
-          {transactions.length} Transactions
+        <span className="text-xs font-mono text-slate-400 bg-slate-900 px-2.5 py-1 rounded border border-slate-800">
+          {transactions.length} Logs
         </span>
       </div>
 
-      {/* Desktop */}
-
+      {/* Desktop Table View */}
       <div className="hidden lg:block">
 
-        <div className="grid grid-cols-6 gap-4 px-8 py-4 text-sm font-semibold uppercase tracking-wider text-gray-500 border-b border-[#242424]">
+        <div className="grid grid-cols-6 gap-4 px-6 py-3 text-xs font-mono font-semibold uppercase tracking-wider text-slate-400 bg-slate-900/60 border-b border-slate-800/80">
           <div>Type</div>
-          <div>Coin</div>
+          <div>Asset</div>
           <div>Quantity</div>
-          <div>Price</div>
+          <div>Unit Price</div>
           <div>Total</div>
-          <div>Date</div>
+          <div className="text-right">Timestamp</div>
         </div>
 
-        {transactions.map((tx) => {
+        <div className="divide-y divide-slate-800/50">
+          {transactions.map((tx) => {
+            const isBuy = String(tx.type).toLowerCase() === "buy";
 
-          const isBuy =
-            String(tx.type).toLowerCase() === "buy";
-
-          return (
-            <div
-              key={tx._id || tx.id}
-              className="grid grid-cols-6 gap-4 items-center px-8 py-5 border-b border-[#1d1d1d] hover:bg-[#181818] transition"
-            >
-
-              <div>
-                <span
-                  className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl font-semibold text-sm ${
-                    isBuy
-                      ? "bg-green-500/10 text-green-400"
-                      : "bg-red-500/10 text-red-400"
-                  }`}
-                >
-                  {isBuy ? (
-                    <FaArrowTrendUp />
-                  ) : (
-                    <FaArrowTrendDown />
-                  )}
-
-                  {String(tx.type).toUpperCase()}
-                </span>
-              </div>
-
-              <div>
-                <h3 className="text-white font-semibold">
-                  {tx.name || tx.coin}
-                </h3>
-
-                <p className="text-gray-500 text-sm">
-                  {tx.symbol}
-                </p>
-              </div>
-
-              <div className="text-white">
-                {Number(tx.quantity).toFixed(4)}
-              </div>
-
-              <div className="text-gray-300">
-                $
-                {Number(tx.price).toLocaleString(undefined, {
-                  maximumFractionDigits: 2,
-                })}
-              </div>
-
-              <div className="font-semibold text-white">
-                $
-                {Number(
-                  tx.totalValue ?? tx.total
-                ).toLocaleString(undefined, {
-                  maximumFractionDigits: 2,
-                })}
-              </div>
-
-              <div className="text-gray-500 text-sm">
-                {new Date(
-                  tx.createdAt ?? tx.date
-                ).toLocaleString()}
-              </div>
-
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Mobile */}
-
-      <div className="lg:hidden p-5 space-y-5">
-
-        {transactions.map((tx) => {
-
-          const isBuy =
-            String(tx.type).toLowerCase() === "buy";
-
-          return (
-            <div
-              key={tx._id || tx.id}
-              className="bg-[#181818] border border-[#242424] rounded-2xl p-5"
-            >
-
-              <div className="flex justify-between items-center mb-4">
+            return (
+              <div
+                key={tx._id || tx.id}
+                className="grid grid-cols-6 gap-4 items-center px-6 py-3.5 hover:bg-slate-800/30 transition-colors"
+              >
+                <div>
+                  <span
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-mono font-bold text-xs ${
+                      isBuy
+                        ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                        : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                    }`}
+                  >
+                    {isBuy ? (
+                      <FaArrowTrendUp className="text-[10px]" />
+                    ) : (
+                      <FaArrowTrendDown className="text-[10px]" />
+                    )}
+                    {String(tx.type).toUpperCase()}
+                  </span>
+                </div>
 
                 <div>
-                  <h3 className="text-white font-semibold">
+                  <h3 className="text-white font-bold text-sm leading-none">
                     {tx.name || tx.coin}
                   </h3>
+                  <p className="text-slate-400 text-xs font-mono mt-1">
+                    {tx.symbol}
+                  </p>
+                </div>
 
-                  <p className="text-gray-500 text-sm">
+                <div className="text-slate-200 font-mono text-sm">
+                  {Number(tx.quantity).toFixed(4)}
+                </div>
+
+                <div className="text-slate-400 font-mono text-sm">
+                  $
+                  {Number(tx.price).toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })}
+                </div>
+
+                <div className="font-mono font-bold text-white text-sm">
+                  $
+                  {Number(
+                    tx.totalValue ?? tx.total
+                  ).toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })}
+                </div>
+
+                <div className="text-slate-400 text-xs font-mono text-right">
+                  {new Date(
+                    tx.createdAt ?? tx.date
+                  ).toLocaleDateString()}{" "}
+                  <span className="text-slate-400 text-[10px]">
+                    {new Date(tx.createdAt ?? tx.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Mobile Card Layout */}
+      <div className="lg:hidden p-4 space-y-3">
+        {transactions.map((tx) => {
+          const isBuy = String(tx.type).toLowerCase() === "buy";
+
+          return (
+            <div
+              key={tx._id || tx.id}
+              className="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 space-y-3"
+            >
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-white font-bold text-sm">
+                    {tx.name || tx.coin}
+                  </h3>
+                  <p className="text-slate-400 font-mono text-xs">
                     {tx.symbol}
                   </p>
                 </div>
 
                 <span
-                  className={`px-3 py-1 rounded-lg text-sm font-semibold ${
+                  className={`px-2.5 py-1 rounded font-mono font-bold text-xs ${
                     isBuy
-                      ? "bg-green-500/10 text-green-400"
-                      : "bg-red-500/10 text-red-400"
+                      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                      : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
                   }`}
                 >
                   {String(tx.type).toUpperCase()}
                 </span>
-
               </div>
 
-              <div className="grid grid-cols-2 gap-4 text-sm">
-
+              <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-2 border-t border-slate-800/60">
                 <div>
-                  <p className="text-gray-500">
-                    Quantity
-                  </p>
-
-                  <p className="text-white">
-                    {Number(tx.quantity).toFixed(4)}
-                  </p>
+                  <p className="text-slate-400">Quantity</p>
+                  <p className="text-white">{Number(tx.quantity).toFixed(4)}</p>
                 </div>
 
                 <div>
-                  <p className="text-gray-500">
-                    Price
-                  </p>
-
+                  <p className="text-slate-400">Price</p>
                   <p className="text-white">
                     $
-                    {Number(tx.price).toLocaleString(
-                      undefined,
-                      {
-                        maximumFractionDigits: 2,
-                      }
-                    )}
+                    {Number(tx.price).toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    })}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-gray-500">
-                    Total
-                  </p>
-
-                  <p className="text-white font-semibold">
+                  <p className="text-slate-400">Total</p>
+                  <p className="text-emerald-400 font-bold">
                     $
                     {Number(
                       tx.totalValue ?? tx.total
@@ -201,23 +174,17 @@ export default function TransactionHistory({
                 </div>
 
                 <div>
-                  <p className="text-gray-500">
-                    Date
-                  </p>
-
-                  <p className="text-white text-xs">
+                  <p className="text-slate-400">Date</p>
+                  <p className="text-slate-300 text-[10px]">
                     {new Date(
                       tx.createdAt ?? tx.date
-                    ).toLocaleString()}
+                    ).toLocaleDateString()}
                   </p>
                 </div>
-
               </div>
-
             </div>
           );
         })}
-
       </div>
 
     </div>

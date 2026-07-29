@@ -1,137 +1,96 @@
-import {
-  FaWallet,
-  FaBitcoin,
-  FaArrowTrendUp,
-  FaChartLine,
-} from "react-icons/fa6";
-
-
-
 import { Link } from "react-router-dom";
 
-export default function Dashboard() {
+// Dashboard sub-components
+import DashboardStats from "../components/dashboard/DashboardStats";
+import MarketOverview from "../components/dashboard/MarketOverview";
+import PortfolioOverview from "../components/dashboard/PortfolioOverview";
+import QuickActions from "../components/dashboard/QuickActions";
+import RecentTransactions from "../components/dashboard/RecentTransactions";
+
+export default function Dashboard({
+  wallet = 10000,
+  portfolio = [],
+  portfolioValue = 0,
+  coins = [],
+  transactions = [],
+}) {
   return (
-    <div className="space-y-10">
-
-
+    <div className="relative px-4 sm:px-6 lg:px-8 relative min-h-screen bg-[#0A0D12] text-slate-100 selection:bg-emerald-500 selection:text-slate-950 font-sans antialiased pb-16">
       
+      {/* Subtle Ambient Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[350px] bg-gradient-to-b from-emerald-500/10 via-teal-500/5 to-transparent blur-[140px] pointer-events-none" />
 
-      {/* HERO */}
+      <div className="relative max-w-7xl mx-auto space-y-8">
 
-      <section className="relative overflow-hidden rounded-3xl border border-red-500/20 bg-gradient-to-br from-[#111111] via-[#0b0b0b] to-[#050505] p-10">
-
-        <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-red-600/10 blur-[120px]" />
-
-        <div className="absolute bottom-0 left-0 h-56 w-56 rounded-full bg-red-500/10 blur-[120px]" />
-
-        <div className="relative z-10 grid lg:grid-cols-2 gap-10 items-center">
-
+        {/* =========================================
+            1. INDUSTRIAL COMPACT HEADER BAR
+        ========================================= */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80">
           <div>
-
-            <span className="inline-block rounded-full bg-red-600/15 border border-red-500/20 px-4 py-2 text-red-400 text-sm tracking-widest uppercase">
-
-              Welcome Back
-
-            </span>
-
-            <h1 className="mt-6 text-5xl font-black text-white leading-tight">
-
-              Crypto Trading
-
-              <br />
-
-              Simulator
-
+            <h1 className="text-2xl font-extrabold text-white tracking-tight">
+              Trading Overview
             </h1>
-
-            <p className="mt-6 max-w-xl text-gray-400 leading-8">
-
-              Practice buying and selling cryptocurrency using
-              live market prices without risking real money.
-
-              Build your portfolio, track your performance
-              and improve your trading skills.
-
+            <p className="text-xs text-slate-400 mt-0.5">
+              Monitor live markets, portfolio metrics, and execute simulated trades.
             </p>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <Link
+              to="/market"
+              className="px-4 py-2 text-xs font-semibold rounded-xl border border-slate-800 bg-slate-900/80 text-slate-200 hover:border-emerald-500/40 hover:text-emerald-400 transition-all duration-200"
+            >
+              Markets
+            </Link>
+            <Link
+              to="/trading"
+              className="px-4 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/25 transition-all duration-200 hover:-translate-y-0.5"
+            >
+              Open Trading Desk
+            </Link>
+          </div>
+        </div>
 
-            <div className="mt-10 flex flex-wrap gap-5">
+        {/* =========================================
+            2. KEY METRICS / STATS ROW
+        ========================================= */}
+        <section>
+          <DashboardStats
+            wallet={wallet}
+            portfolio={portfolio}
+            portfolioValue={portfolioValue}
+          />
+        </section>
 
-              <Link
-                to="/market"
-                className="rounded-2xl bg-red-600 px-7 py-4 font-semibold text-white hover:bg-red-700 duration-300"
-              >
-                Explore Market
-              </Link>
+        {/* =========================================
+            3. MAIN DASHBOARD GRID LAYOUT
+        ========================================= */}
+        <div className="grid lg:grid-cols-12 gap-8">
+          
+          {/* Main Left Column (Portfolio & Activity Logs) */}
+          <div className="lg:col-span-8 space-y-8">
+            <PortfolioOverview
+              portfolio={portfolio}
+              coins={coins}
+            />
 
-              <Link
-                to="/trading"
-                className="rounded-2xl border border-red-500 px-7 py-4 font-semibold text-red-400 hover:bg-red-600 hover:text-white duration-300"
-              >
-                Start Trading
-              </Link>
-
-            </div>
-
+            <RecentTransactions
+              transactions={transactions}
+            />
           </div>
 
-          <div className="grid grid-cols-2 gap-5">
+          {/* Right Column (Quick Actions & Market Watchlist) */}
+          <div className="lg:col-span-4 space-y-8">
+            <QuickActions />
 
-            <Card
-              icon={<FaWallet />}
-              title="$10,000"
-              subtitle="Virtual Wallet"
+            <MarketOverview
+              coins={coins}
             />
-
-            <Card
-              icon={<FaBitcoin />}
-              title="4"
-              subtitle="Supported Coins"
-            />
-
-            <Card
-              icon={<FaArrowTrendUp />}
-              title="Live"
-              subtitle="CoinGecko Prices"
-            />
-
-            <Card
-              icon={<FaChartLine />}
-              title="Portfolio"
-              subtitle="Performance Analytics"
-            />
-
           </div>
 
         </div>
 
-      </section>
-
-    </div>
-  );
-}
-
-function Card({ icon, title, subtitle }) {
-  return (
-    <div className="rounded-3xl border border-white/10 bg-[#111111] p-7 hover:border-red-500 transition duration-300 hover:-translate-y-2">
-
-      <div className="w-14 h-14 rounded-2xl bg-red-600/20 flex items-center justify-center text-red-500 text-2xl mb-5">
-
-        {icon}
-
       </div>
-
-      <h2 className="text-3xl font-black text-white">
-
-        {title}
-
-      </h2>
-
-      <p className="mt-2 text-gray-400">
-
-        {subtitle}
-
-      </p>
-
     </div>
   );
 }
