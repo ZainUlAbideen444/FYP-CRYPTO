@@ -3,112 +3,168 @@ import {
   FaGithub,
   FaLinkedin,
   FaEnvelope,
+  FaArrowUp,
 } from "react-icons/fa";
 
 import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="bg-black border-t border-white/10">
+    <footer className="relative border-t border-slate-800/80 bg-[#07090E] overflow-hidden">
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-20">
+      {/* Subtle Bottom Ambient Glow */}
+      <div className="absolute left-0 bottom-0 h-80 w-80 rounded-full bg-emerald-500/5 blur-[160px] pointer-events-none" />
+      <div className="absolute right-0 bottom-0 h-80 w-80 rounded-full bg-teal-500/5 blur-[160px] pointer-events-none" />
 
-        <div className="grid md:grid-cols-4 gap-12">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
 
-          {/* Logo */}
+        <div className="grid gap-10 lg:gap-12 lg:grid-cols-12">
 
-          <div>
+          {/* Logo & Brand Info */}
 
-            <div className="flex items-center gap-4">
+          <div className="lg:col-span-4">
 
-              <div className="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center">
+            <div className="flex items-center gap-3.5">
 
-                <FaBitcoin className="text-white text-2xl"/>
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/20 text-slate-950">
+
+                <FaBitcoin className="text-2xl" />
 
               </div>
 
               <div>
 
-                <h2 className="text-white text-2xl font-black">
+                <h2 className="text-xl font-bold tracking-tight text-white">
+
                   Crypto Web
+
                 </h2>
 
-                <p className="text-gray-500">
+                <p className="text-xs font-mono font-semibold uppercase tracking-wider text-emerald-400">
+
                   Trading Simulator
+
                 </p>
 
               </div>
 
             </div>
 
-            <p className="text-gray-400 mt-8 leading-7">
-              Practice cryptocurrency trading using virtual funds and real-time market data in a safe environment.
+            <p className="mt-5 text-sm leading-relaxed text-slate-400 max-w-sm">
+
+              Learn cryptocurrency trading with live market prices,
+              virtual investments, portfolio management and
+              performance analytics.
+
             </p>
 
           </div>
 
-          {/* Navigation */}
+          {/* Navigation Links */}
 
-          <div>
+          <div className="lg:col-span-2">
 
-            <h3 className="text-white font-bold text-xl mb-6">
+            <h3 className="mb-5 text-xs font-semibold uppercase tracking-wider text-slate-300">
+
               Navigation
+
             </h3>
 
-            <FooterLink to="/">Home</FooterLink>
-            <FooterLink to="/market">Market</FooterLink>
-            <FooterLink to="/trading">Trading</FooterLink>
-            <FooterLink to="/portfolio">Portfolio</FooterLink>
+            <div className="space-y-3">
+              <FooterLink to="/">Home</FooterLink>
 
-          </div>
+              <FooterLink to="/market">Market</FooterLink>
 
-          {/* Resources */}
+              <FooterLink to="/trading">Trading</FooterLink>
 
-          <div>
+              <FooterLink to="/portfolio">Portfolio</FooterLink>
 
-            <h3 className="text-white font-bold text-xl mb-6">
-              Resources
-            </h3>
-
-            <p className="text-gray-400 mb-4">
-              CoinGecko API
-            </p>
-
-            <p className="text-gray-400 mb-4">
-              MERN Stack
-            </p>
-
-            <p className="text-gray-400">
-              MongoDB Atlas
-            </p>
-
-          </div>
-
-          {/* Contact */}
-
-          <div>
-
-            <h3 className="text-white font-bold text-xl mb-6">
-              Connect
-            </h3>
-
-            <div className="flex gap-5 text-2xl">
-
-              <FaGithub className="text-gray-400 hover:text-red-500 cursor-pointer transition"/>
-
-              <FaLinkedin className="text-gray-400 hover:text-red-500 cursor-pointer transition"/>
-
-              <FaEnvelope className="text-gray-400 hover:text-red-500 cursor-pointer transition"/>
-
+              <FooterLink to="/performance">Performance</FooterLink>
             </div>
+
+          </div>
+
+          {/* Tech Stack / Technologies */}
+
+          <div className="lg:col-span-3">
+
+            <h3 className="mb-5 text-xs font-semibold uppercase tracking-wider text-slate-300">
+
+              Technologies
+
+            </h3>
+
+            <div className="space-y-3">
+              <Item>React.js</Item>
+
+              <Item>Node.js</Item>
+
+              <Item>Express.js</Item>
+
+              <Item>MongoDB Atlas</Item>
+
+              <Item>CoinGecko API</Item>
+            </div>
+
+          </div>
+
+          {/* Social Links & Back To Top Button */}
+
+          <div className="lg:col-span-3 flex flex-col justify-between">
+
+            <div>
+              <h3 className="mb-5 text-xs font-semibold uppercase tracking-wider text-slate-300">
+
+                Connect
+
+              </h3>
+
+              <div className="flex gap-3">
+
+                <Social><FaGithub /></Social>
+
+                <Social><FaLinkedin /></Social>
+
+                <Social><FaEnvelope /></Social>
+
+              </div>
+            </div>
+
+            <button
+              onClick={() =>
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                })
+              }
+              className="mt-8 inline-flex items-center justify-center gap-2.5 rounded-xl border border-slate-800 bg-[#11151F] px-4 py-3 text-xs font-semibold text-slate-300 backdrop-blur-md transition-all duration-200 hover:border-slate-700 hover:bg-[#161B27] hover:text-white group w-fit"
+            >
+
+              <FaArrowUp className="text-emerald-400 transition-transform duration-200 group-hover:-translate-y-0.5" />
+
+              Back To Top
+
+            </button>
 
           </div>
 
         </div>
 
-        <div className="border-t border-white/10 mt-16 pt-8 text-center text-gray-500">
+        {/* Footer Sub-Bar */}
 
-          © 2026 Crypto Web — Final Year Project | Built with the MERN stack
+        <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-slate-800/80 pt-8 text-center text-xs text-slate-500 sm:flex-row sm:text-left">
+
+          <p className="font-medium">
+
+            © 2026 Crypto Web — Final Year Project
+
+          </p>
+
+          <p className="font-mono text-slate-500">
+
+            MERN Stack • React • Node • Express • MongoDB
+
+          </p>
 
         </div>
 
@@ -122,9 +178,25 @@ function FooterLink({ to, children }) {
   return (
     <Link
       to={to}
-      className="block text-gray-400 hover:text-red-500 transition mb-4"
+      className="block text-sm text-slate-400 transition-all duration-200 hover:translate-x-1.5 hover:text-emerald-400 font-medium"
     >
       {children}
     </Link>
+  );
+}
+
+function Item({ children }) {
+  return (
+    <p className="text-sm text-slate-400 font-medium">
+      {children}
+    </p>
+  );
+}
+
+function Social({ children }) {
+  return (
+    <div className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-slate-800 bg-[#11151F] text-base text-slate-400 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-emerald-500/40 hover:bg-emerald-500/10 hover:text-emerald-400">
+      {children}
+    </div>
   );
 }

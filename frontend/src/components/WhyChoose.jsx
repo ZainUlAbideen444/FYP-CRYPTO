@@ -12,104 +12,102 @@ const features = [
   {
     icon: <FaUserGraduate />,
     title: "Beginner Friendly",
-    text: "Learn cryptocurrency trading without risking your own money.",
+    text: "Practice trading with virtual money before entering the real crypto market.",
   },
   {
     icon: <FaCoins />,
     title: "Real-Time Prices",
-    text: "Live cryptocurrency market data powered by CoinGecko API.",
+    text: "Market data is powered by the CoinGecko API for realistic trading.",
   },
   {
     icon: <FaWallet />,
-    title: "Virtual Wallet",
-    text: "Every user starts with a $10,000 virtual balance.",
+    title: "$10,000 Wallet",
+    text: "Every account begins with a virtual balance to practice trading.",
   },
   {
     icon: <FaChartLine />,
     title: "Portfolio Analytics",
-    text: "Track profits, losses, investment value and holdings.",
+    text: "Track investments, profits, losses and overall performance.",
   },
   {
     icon: <FaShieldAlt />,
-    title: "Secure Authentication",
-    text: "JWT authentication with encrypted passwords keeps accounts safe.",
+    title: "Secure Login",
+    text: "JWT authentication with encrypted passwords protects your account.",
   },
   {
     icon: <FaServer />,
-    title: "MERN Stack",
-    text: "Built using React, Express, Node.js and MongoDB Atlas.",
+    title: "Modern MERN Stack",
+    text: "Built using React, Node.js, Express and MongoDB Atlas.",
   },
 ];
 
 export default function WhyChoose() {
   return (
-    <section className="bg-[#050505] py-32">
+    <section className="relative overflow-hidden bg-[#0A0D12] py-16 lg:py-24">
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-10">
+      {/* Ambient Lighting Gradients */}
+      <div className="absolute left-[-150px] top-1/3 h-[450px] w-[450px] rounded-full bg-emerald-500/10 blur-[160px] pointer-events-none" />
+      <div className="absolute right-[-150px] bottom-1/3 h-[450px] w-[450px] rounded-full bg-teal-500/10 blur-[160px] pointer-events-none" />
 
-        <div className="grid lg:grid-cols-2 gap-20 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          {/* LEFT */}
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+
+          {/* LEFT: Section Intro & Features Grid */}
 
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-7"
           >
 
-            <span className="uppercase tracking-[5px] text-red-500 font-semibold">
-              Why Choose Us
+            <span className="inline-block px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
+              Why Crypto Web
             </span>
 
-            <h2 className="text-white text-5xl font-black mt-5 leading-tight">
-
-              Designed For Future
-              <br />
-              Crypto Traders
-
+            <h2 className="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight text-white tracking-tight">
+              Learn Like A{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">
+                Professional Trader
+              </span>
             </h2>
 
-            <p className="text-gray-400 mt-8 leading-8 text-lg">
-
-              Crypto Web provides a realistic cryptocurrency trading
-              environment where beginners can learn, practice and improve
-              their trading strategies before entering real markets.
-
+            <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-400">
+              Crypto Web recreates a professional cryptocurrency trading
+              environment using live prices, virtual trading, portfolio
+              management and detailed analytics.
             </p>
 
-            <div className="mt-12 space-y-6">
+            <div className="grid sm:grid-cols-2 gap-4 mt-8">
 
               {features.map((item, index) => (
 
-                <motion.div
+                <div
                   key={index}
-                  whileHover={{ x: 10 }}
-                  className="flex gap-5 items-start bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-red-500 transition"
+                  className="group relative rounded-2xl border border-slate-800/80 bg-[#11151F]/80 p-5 backdrop-blur-md shadow-lg transition-all duration-300 hover:border-slate-700 hover:bg-[#161B27]"
                 >
 
-                  <div className="w-14 h-14 rounded-xl bg-red-600 flex items-center justify-center text-white text-xl">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-lg shadow-inner group-hover:scale-105 group-hover:bg-emerald-500/20 transition-all duration-300">
 
                     {item.icon}
 
                   </div>
 
-                  <div>
+                  <h3 className="mt-4 text-base font-bold text-white group-hover:text-emerald-400 transition-colors">
 
-                    <h3 className="text-white text-xl font-semibold">
+                    {item.title}
 
-                      {item.title}
+                  </h3>
 
-                    </h3>
+                  <p className="mt-1.5 text-xs sm:text-sm text-slate-400 leading-relaxed">
 
-                    <p className="text-gray-400 mt-2 leading-7">
+                    {item.text}
 
-                      {item.text}
+                  </p>
 
-                    </p>
-
-                  </div>
-
-                </motion.div>
+                </div>
 
               ))}
 
@@ -117,37 +115,88 @@ export default function WhyChoose() {
 
           </motion.div>
 
-          {/* RIGHT */}
+          {/* RIGHT: Live Portfolio Preview Card */}
 
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-5"
           >
 
-            <div className="relative">
+            <div className="rounded-3xl border border-slate-800/90 bg-[#11151F]/90 p-6 sm:p-7 shadow-[0_0_50px_-12px_rgba(16,185,129,0.12)] backdrop-blur-xl transition-all duration-300 hover:border-slate-700">
 
-              <div className="absolute -top-16 -right-10 w-72 h-72 rounded-full bg-red-600/20 blur-[120px]"></div>
+              <div className="flex items-center justify-between pb-6 border-b border-slate-800/80">
 
-              <div className="relative rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl p-8 shadow-[0_20px_80px_rgba(255,0,0,.15)]">
+                <div>
 
-                <h3 className="text-white text-2xl font-bold mb-8">
+                  <p className="text-xs font-semibold text-slate-400 tracking-wide uppercase">
+                    Portfolio Balance
+                  </p>
 
-                  Dashboard Overview
-
-                </h3>
-
-                <div className="space-y-5">
-
-                  <DashboardCard title="Wallet Balance" value="$10,000" color="text-green-400"/>
-
-                  <DashboardCard title="Portfolio Value" value="$12,485" color="text-white"/>
-
-                  <DashboardCard title="Today's Profit" value="+12.45%" color="text-green-400"/>
-
-                  <DashboardCard title="Trades Completed" value="148" color="text-red-400"/>
+                  <h2 className="mt-1 text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight">
+                    $12,486
+                  </h2>
 
                 </div>
+
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-sm">
+
+                  <FaChartLine className="text-xl" />
+
+                </div>
+
+              </div>
+
+              <div className="mt-5 space-y-2.5">
+
+                <DashboardRow
+                  coin="Bitcoin"
+                  symbol="BTC"
+                  amount="$6,245"
+                  change="+8.4%"
+                />
+
+                <DashboardRow
+                  coin="Ethereum"
+                  symbol="ETH"
+                  amount="$2,950"
+                  change="+4.1%"
+                />
+
+                <DashboardRow
+                  coin="BNB"
+                  symbol="BNB"
+                  amount="$1,865"
+                  change="+2.9%"
+                />
+
+                <DashboardRow
+                  coin="Solana"
+                  symbol="SOL"
+                  amount="$1,426"
+                  change="+10.8%"
+                />
+
+              </div>
+
+              <div className="mt-5 grid grid-cols-3 gap-3">
+
+                <Stat
+                  value="24"
+                  label="Trades"
+                />
+
+                <Stat
+                  value="87%"
+                  label="Win Rate"
+                />
+
+                <Stat
+                  value="+18%"
+                  label="Growth"
+                />
 
               </div>
 
@@ -163,23 +212,49 @@ export default function WhyChoose() {
   );
 }
 
-function DashboardCard({ title, value, color }) {
+function DashboardRow({ coin, symbol, amount, change }) {
   return (
-    <div className="bg-[#111111] rounded-2xl p-5 flex justify-between items-center border border-[#202020]">
+    <div className="group flex items-center justify-between rounded-xl border border-slate-800/60 bg-[#0B0E14]/60 p-3.5 transition-all duration-200 hover:border-slate-700 hover:bg-slate-800/40">
 
       <div>
 
-        <p className="text-gray-400 text-sm">
-          {title}
-        </p>
-
-        <h3 className={`text-2xl font-bold mt-2 ${color}`}>
-          {value}
+        <h3 className="text-sm font-semibold text-white group-hover:text-emerald-400 transition-colors">
+          {coin}
         </h3>
+
+        <p className="text-xs font-medium text-slate-500">
+          {symbol}
+        </p>
 
       </div>
 
-      <div className="w-12 h-12 rounded-xl bg-red-600/20"></div>
+      <div className="text-right">
+
+        <h3 className="text-sm font-bold text-white font-mono">
+          {amount}
+        </h3>
+
+        <p className="text-xs font-semibold text-emerald-400 font-mono">
+          {change}
+        </p>
+
+      </div>
+
+    </div>
+  );
+}
+
+function Stat({ value, label }) {
+  return (
+    <div className="rounded-xl border border-slate-800/80 bg-[#0B0E14]/80 p-3.5 text-center">
+
+      <h2 className="text-lg sm:text-xl font-bold text-white font-mono tracking-tight">
+        {value}
+      </h2>
+
+      <p className="mt-0.5 text-xs text-slate-400 font-medium">
+        {label}
+      </p>
 
     </div>
   );

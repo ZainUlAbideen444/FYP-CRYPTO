@@ -3,64 +3,84 @@ import {
   FaEthereum,
 } from "react-icons/fa";
 
-import { SiBinance, SiSolana } from "react-icons/si";
+import {
+  SiBinance,
+  SiSolana,
+} from "react-icons/si";
 
 const coins = [
   {
-    icon: <FaBitcoin />,
-    name: "BTC",
+    icon: <FaBitcoin className="text-yellow-400" />,
+    symbol: "BTC",
     price: "$118,430",
-    change: "+2.4%",
+    change: "+2.40%",
+    positive: true,
   },
   {
-    icon: <FaEthereum />,
-    name: "ETH",
+    icon: <FaEthereum className="text-indigo-400" />,
+    symbol: "ETH",
     price: "$4,580",
-    change: "+1.8%",
+    change: "+1.80%",
+    positive: true,
   },
   {
-    icon: <SiBinance />,
-    name: "BNB",
+    icon: <SiBinance className="text-yellow-500" />,
+    symbol: "BNB",
     price: "$910",
-    change: "-0.6%",
+    change: "-0.60%",
+    positive: false,
   },
   {
-    icon: <SiSolana />,
-    name: "SOL",
+    icon: <SiSolana className="text-purple-400" />,
+    symbol: "SOL",
     price: "$241",
-    change: "+4.2%",
+    change: "+4.20%",
+    positive: true,
   },
 ];
 
 export default function MarketTicker() {
   return (
-    <section className="bg-gradient-to-r from-red-700 via-red-600 to-red-700 overflow-hidden">
+    <section className="border-y border-white/10 bg-[#0b0b0d]">
 
-      <div className="animate-marquee whitespace-nowrap py-3 flex gap-16">
+      <div className="max-w-7xl mx-auto overflow-hidden">
 
-        {coins.concat(coins).map((coin, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-3 text-white text-lg font-semibold"
-          >
-            {coin.icon}
+        <div className="flex animate-marquee whitespace-nowrap">
 
-            <span>{coin.name}</span>
+          {[...coins, ...coins, ...coins].map((coin, index) => (
 
-            <span>{coin.price}</span>
-
-            <span
-              className={
-                coin.change.startsWith("+")
-                  ? "text-green-300"
-                  : "text-white"
-              }
+            <div
+              key={index}
+              className="mx-8 flex items-center gap-4 py-4"
             >
-              {coin.change}
-            </span>
 
-          </div>
-        ))}
+              <div className="text-2xl">
+                {coin.icon}
+              </div>
+
+              <span className="font-semibold text-white">
+                {coin.symbol}
+              </span>
+
+              <span className="text-gray-400">
+                {coin.price}
+              </span>
+
+              <span
+                className={
+                  coin.positive
+                    ? "rounded-full bg-green-500/10 px-3 py-1 text-sm font-semibold text-green-400"
+                    : "rounded-full bg-red-500/10 px-3 py-1 text-sm font-semibold text-red-400"
+                }
+              >
+                {coin.change}
+              </span>
+
+            </div>
+
+          ))}
+
+        </div>
 
       </div>
 

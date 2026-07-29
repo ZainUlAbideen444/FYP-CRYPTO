@@ -8,122 +8,111 @@ import {
 
 const steps = [
   {
-    id: "01",
+    number: "01",
     icon: <FaUserPlus />,
-    title: "Create Your Account",
+    title: "Create Account",
     description:
-      "Register securely and receive a virtual balance of $10,000 to start trading immediately.",
+      "Register securely and receive a virtual balance of $10,000 to begin trading instantly.",
   },
   {
-    id: "02",
+    number: "02",
     icon: <FaChartLine />,
-    title: "Explore Live Market",
+    title: "Watch Live Market",
     description:
-      "View live cryptocurrency prices powered by the CoinGecko API and monitor market trends.",
+      "Track real-time cryptocurrency prices powered by the CoinGecko API.",
   },
   {
-    id: "03",
+    number: "03",
     icon: <FaExchangeAlt />,
-    title: "Trade Instantly",
+    title: "Trade Virtually",
     description:
-      "Buy and sell Bitcoin, Ethereum, BNB, and Solana using virtual funds without financial risk.",
+      "Buy and sell Bitcoin, Ethereum, BNB and Solana without risking real money.",
   },
   {
-    id: "04",
+    number: "04",
     icon: <FaWallet />,
-    title: "Track Your Portfolio",
+    title: "Track Performance",
     description:
-      "Monitor holdings, profits, losses, and transaction history from one professional dashboard.",
+      "Monitor your portfolio, profits, losses and trading history from one dashboard.",
   },
 ];
 
 export default function HowItWorks() {
   return (
-    <section className="bg-[#050505] py-32">
+    <section className="relative overflow-hidden bg-[#0A0D12] py-16 lg:py-24">
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-10">
+      {/* Ambient Lighting Gradients */}
+      <div className="absolute left-[-100px] top-1/4 h-[400px] w-[400px] rounded-full bg-emerald-500/10 blur-[150px] pointer-events-none" />
+      <div className="absolute right-[-100px] bottom-1/4 h-[400px] w-[400px] rounded-full bg-teal-500/10 blur-[150px] pointer-events-none" />
 
-        <div className="text-center mb-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          <p className="uppercase tracking-[5px] text-red-500 font-semibold">
-            Workflow
-          </p>
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto">
+          <span className="inline-block px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
+            How It Works
+          </span>
 
-          <h2 className="text-5xl font-black text-white mt-5">
-            How Crypto Web Works
+          <h2 className="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+            Start Trading In{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">
+              Four Simple Steps
+            </span>
           </h2>
 
-          <p className="text-gray-400 text-lg max-w-3xl mx-auto mt-6 leading-8">
-            Start learning cryptocurrency trading in four simple steps.
-            No real investment required.
+          <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-400">
+            Learn cryptocurrency trading through a simple process designed
+            specifically for beginners.
           </p>
-
         </div>
 
-        <div className="relative">
+        {/* Grid Container */}
+        <div className="mt-14 grid gap-6 md:grid-cols-2 lg:gap-8">
 
-          {/* Vertical Line */}
+          {steps.map((step) => (
 
-          <div className="hidden lg:block absolute left-1/2 top-0 h-full w-1 bg-gradient-to-b from-red-600 via-red-500 to-transparent -translate-x-1/2 rounded-full"></div>
+            <motion.div
+              key={step.number}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              whileHover={{ y: -6 }}
+              className="group relative rounded-2xl border border-slate-800/80 bg-[#11151F]/80 p-7 sm:p-8 backdrop-blur-md shadow-xl transition-all duration-300 hover:border-slate-700 hover:bg-[#161B27]"
+            >
+              {/* Subtle Edge Glow on Hover */}
+              <div className="absolute top-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/0 to-transparent group-hover:via-emerald-500/30 transition-all duration-500" />
 
-          <div className="space-y-20">
-
-            {steps.map((step, index) => (
-
-              <motion.div
-                key={step.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: .5 }}
-                className={`flex flex-col lg:flex-row items-center ${
-                  index % 2 !== 0 ? "lg:flex-row-reverse" : ""
-                }`}
-              >
-
-                {/* Content */}
-
-                <div className="lg:w-5/12">
-
-                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-10 hover:border-red-500 transition duration-300 shadow-[0_20px_50px_rgba(255,0,0,.08)]">
-
-                    <span className="text-red-500 text-sm tracking-[3px] uppercase">
-                      Step {step.id}
-                    </span>
-
-                    <h3 className="text-white text-3xl font-bold mt-4">
-                      {step.title}
-                    </h3>
-
-                    <p className="text-gray-400 leading-8 mt-5 text-lg">
-                      {step.description}
-                    </p>
-
-                  </div>
-
+              <div className="flex items-center justify-between">
+                
+                {/* Icon Container */}
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-2xl text-emerald-400 shadow-md group-hover:scale-105 group-hover:bg-emerald-500/20 transition-all duration-300">
+                  {step.icon}
                 </div>
 
-                {/* Center Icon */}
+                {/* Step Number Backdrop Badge */}
+                <span className="text-4xl sm:text-5xl font-extrabold font-mono text-slate-800 group-hover:text-emerald-500/20 transition-colors duration-300">
+                  {step.number}
+                </span>
 
-                <div className="hidden lg:flex w-2/12 justify-center relative">
+              </div>
 
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-r from-red-600 to-red-500 flex items-center justify-center text-white text-3xl shadow-[0_0_40px_rgba(239,68,68,.45)] z-10">
+              {/* Title */}
+              <h3 className="mt-6 text-xl font-bold text-white tracking-tight group-hover:text-emerald-400 transition-colors">
+                {step.title}
+              </h3>
 
-                    {step.icon}
+              {/* Description */}
+              <p className="mt-2.5 text-sm sm:text-base leading-relaxed text-slate-400">
+                {step.description}
+              </p>
 
-                  </div>
+              {/* Controlled Accent Progress Bar */}
+              <div className="mt-6 h-[2px] w-12 rounded-full bg-emerald-500/30 group-hover:w-24 group-hover:bg-emerald-400 transition-all duration-300" />
 
-                </div>
+            </motion.div>
 
-                {/* Empty Side */}
-
-                <div className="lg:w-5/12"></div>
-
-              </motion.div>
-
-            ))}
-
-          </div>
+          ))}
 
         </div>
 

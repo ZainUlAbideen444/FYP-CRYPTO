@@ -1,263 +1,199 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import {
+  FaArrowTrendUp,
   FaBitcoin,
   FaEthereum,
-  FaArrowTrendUp,
+  FaChevronRight,
+  FaShieldHalved,
+  FaChartLine,
+  FaWallet,
 } from "react-icons/fa6";
 import { SiBinance, SiSolana } from "react-icons/si";
-import Button from "./Button";
 
 const coins = [
   {
-    icon: <FaBitcoin className="text-yellow-400 text-2xl" />,
     name: "Bitcoin",
     symbol: "BTC",
     price: "$118,430",
     change: "+2.40%",
+    icon: <FaBitcoin className="text-amber-400 text-2xl" />,
   },
   {
-    icon: <FaEthereum className="text-indigo-400 text-2xl" />,
     name: "Ethereum",
     symbol: "ETH",
     price: "$4,580",
-    change: "+1.80%",
+    change: "+1.82%",
+    icon: <FaEthereum className="text-sky-400 text-2xl" />,
   },
   {
-    icon: <SiBinance className="text-yellow-500 text-2xl" />,
     name: "BNB",
     symbol: "BNB",
     price: "$910",
-    change: "-0.60%",
+    change: "+0.94%",
+    icon: <SiBinance className="text-yellow-400 text-2xl" />,
   },
   {
-    icon: <SiSolana className="text-purple-400 text-2xl" />,
     name: "Solana",
     symbol: "SOL",
     price: "$241",
-    change: "+4.20%",
+    change: "+4.21%",
+    icon: <SiSolana className="text-purple-400 text-2xl" />,
   },
 ];
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-[#050505] pt-28 pb-32">
+    <section className="relative overflow-hidden bg-[#0A0D12] min-h-[90vh] flex items-center py-16 lg:py-24">
+      
+      {/* Refined Ambient Glows */}
+      <div className="absolute left-[-150px] top-[-100px] h-[450px] w-[450px] rounded-full bg-emerald-500/10 blur-[140px] pointer-events-none" />
+      <div className="absolute right-[-150px] bottom-[-100px] h-[450px] w-[450px] rounded-full bg-cyan-500/10 blur-[140px] pointer-events-none" />
 
-      {/* Background Blur */}
-
-      <div className="absolute -top-40 left-0 w-[550px] h-[550px] rounded-full bg-red-600/20 blur-[180px]" />
-
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-red-700/10 blur-[170px]" />
-
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-[1.15fr_0.85fr] gap-20 items-center">
-
-        {/* LEFT */}
-
-        <motion.div
-          initial={{ opacity: 0, x: -70 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: .8 }}
-        >
-
-          <span className="inline-block px-4 py-2 rounded-full bg-red-600/10 border border-red-500/30 text-red-400 uppercase tracking-[4px] text-sm font-semibold">
-
-            Real-Time Crypto Trading Simulator
-
-          </span>
-
-          <h1 className="mt-8 text-white text-5xl md:text-7xl font-black leading-[1.05]">
-
-            Learn Crypto
-
-            <br />
-
-            Trading
-
-            <span className="block text-red-500 mt-2">
-
-              Without Risk
-
+      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
+          
+          {/* LEFT: Value Proposition */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="lg:col-span-7"
+          >
+            {/* Pill Badge */}
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-400 backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              MERN Stack Trading Platform
             </span>
 
-          </h1>
+            {/* Main Headline */}
+            <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl xl:text-7xl leading-[1.1]">
+              Learn Crypto <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">
+                Trading Safely.
+              </span>
+            </h1>
 
-          <p className="mt-8 text-gray-400 text-xl leading-9 max-w-xl">
+            {/* Subtitle */}
+            <p className="mt-9 max-w-xl text-base sm:text-lg leading-relaxed text-slate-400">
+              Practice cryptocurrency paper trading using real-time market data,
+              a $10,000 virtual balance, and advanced analytics. Build strategy 
+              and confidence with zero financial risk.
+            </p>
 
-            Experience cryptocurrency trading using virtual funds,
-            real-time market prices, portfolio management,
-            and performance analytics.
+            {/* Action Buttons */}
+            <div className="mt-8 flex flex-wrap items-center gap-9">
+              <Link
+                to="/register"
+                className="group flex items-center gap-2 rounded-xl bg-emerald-500 px-11 py-5.5 text-md font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition-all duration-200 hover:bg-emerald-400 hover:shadow-emerald-500/30 hover:-translate-y-0.5 active:translate-y-0"
+              >
+                <span>Start Trading Free</span>
+                <FaChevronRight className="text-xs transition-transform group-hover:translate-x-1" />
+              </Link>
 
-            Learn the market confidently without risking
-            real money.
-
-          </p>
-
-          <div className="mt-12 flex flex-wrap gap-5">
-
-            <Button className="px-8 py-4 rounded-2xl text-lg shadow-[0_15px_45px_rgba(239,68,68,.35)]">
-              Start Trading
-            </Button>
-
-            <button className="px-8 py-4 rounded-2xl border border-red-500 text-red-500 hover:bg-red-600 hover:text-white transition">
-
-              Explore Market
-
-            </button>
-
-          </div>
-
-          {/* Bottom Statistics */}
-
-          <div className="grid grid-cols-3 gap-6 mt-16">
-
-            <div>
-
-              <h2 className="text-red-500 text-4xl font-black">
-                $10K
-              </h2>
-
-              <p className="text-gray-400 mt-2">
-                Virtual Balance
-              </p>
-
+              <Link
+                to="/market"
+                className="rounded-xl border border-slate-700/80 bg-slate-900/50 px-7 py-3.5 text-sm font-semibold text-slate-200 backdrop-blur-sm transition-all duration-200 hover:border-slate-500 hover:bg-slate-800 hover:text-white"
+              >
+                Explore Live Markets
+              </Link>
             </div>
 
-            <div>
-
-              <h2 className="text-red-500 text-4xl font-black">
-                4
-              </h2>
-
-              <p className="text-gray-400 mt-2">
-                Supported Coins
-              </p>
-
-            </div>
-
-            <div>
-
-              <h2 className="text-red-500 text-4xl font-black">
-                100%
-              </h2>
-
-              <p className="text-gray-400 mt-2">
-                Risk Free
-              </p>
-
-            </div>
-
-          </div>
-
-        </motion.div>
-
-        {/* RIGHT */}
-
-        <motion.div
-          initial={{ opacity: 0, x: 70 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: .8 }}
-        >
-
-          <div className="rounded-3xl border border-red-600/20 bg-white/5 backdrop-blur-xl p-8 shadow-[0_20px_70px_rgba(255,0,0,.15)]">
-
-            <div className="flex items-center justify-between">
-
-              <div>
-
-                <h2 className="text-white text-2xl font-bold">
-
-                  Live Market
-
-                </h2>
-
-                <p className="text-gray-400 mt-2">
-
-                  Top Cryptocurrencies
-
-                </p>
-
-              </div>
-
-              <div className="w-14 h-14 rounded-2xl bg-red-600 flex items-center justify-center">
-
-                <FaArrowTrendUp className="text-white text-xl"/>
-
-              </div>
-
-            </div>
-
-            <div className="mt-10 space-y-5">
-
-              {coins.map((coin) => (
-
-                <div
-                  key={coin.symbol}
-                  className="flex justify-between items-center rounded-2xl bg-[#121212] border border-[#202020] px-5 py-5 hover:border-red-500 transition duration-300 hover:-translate-y-1"
-                >
-
-                  <div className="flex items-center gap-4">
-
-                    <div className="w-12 h-12 rounded-xl bg-black flex items-center justify-center">
-
-                      {coin.icon}
-
-                    </div>
-
-                    <div>
-
-                      <h3 className="text-white font-semibold text-lg">
-
-                        {coin.name}
-
-                      </h3>
-
-                      <p className="text-gray-500">
-
-                        {coin.symbol}
-
-                      </p>
-
-                    </div>
-
-                  </div>
-
-                  <div className="text-right">
-
-                    <p className="text-white font-semibold text-lg">
-
-                      {coin.price}
-
-                    </p>
-
-                    <span
-                      className={
-                        coin.change.startsWith("+")
-                          ? "text-green-500 font-semibold"
-                          : "text-red-500 font-semibold"
-                      }
-                    >
-                      {coin.change}
-                    </span>
-
-                  </div>
-
+            {/* Value Indicators */}
+            <div className="mt-12 grid grid-cols-3 gap-4 border-t border-slate-800/80 pt-8 max-w-lg">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-emerald-400">
+                  <FaWallet className="text-lg" />
                 </div>
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white font-mono">$10K</h3>
+                  <p className="text-xs text-slate-400">Virtual Wallet</p>
+                </div>
+              </div>
 
-              ))}
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-emerald-400">
+                  <FaChartLine className="text-lg" />
+                </div>
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white font-mono">24/7</h3>
+                  <p className="text-xs text-slate-400">Real-Time Data</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-emerald-400">
+                  <FaShieldHalved className="text-lg" />
+                </div>
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white font-mono">100%</h3>
+                  <p className="text-xs text-slate-400">Risk Free</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* RIGHT: Live Market Preview */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+            className="lg:col-span-5"
+          >
+            <div className="rounded-3xl border border-slate-800 bg-[#12161F]/90 p-6 sm:p-7 shadow-2xl backdrop-blur-xl hover:border-slate-700 transition-all duration-300">
+              
+              {/* Card Header */}
+              <div className="flex items-center justify-between pb-6 border-b border-slate-800/80">
+                <div>
+                  <h2 className="text-xl font-bold text-white">Live Market</h2>
+                  <p className="text-xs text-slate-400 mt-0.5">Powered by real-time API feeds</p>
+                </div>
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                  <FaArrowTrendUp className="text-lg" />
+                </div>
+              </div>
+
+              {/* Coin List */}
+              <div className="mt-5 space-y-3">
+                {coins.map((coin) => (
+                  <div
+                    key={coin.symbol}
+                    className="group flex items-center justify-between rounded-xl border border-slate-800/60 bg-[#0B0E14]/60 p-3.5 transition-all duration-200 hover:border-slate-700 hover:bg-slate-800/40"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-slate-900 border border-slate-800">
+                        {coin.icon}
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-white group-hover:text-emerald-400 transition-colors">
+                          {coin.name}
+                        </h3>
+                        <p className="text-xs font-medium text-slate-500">{coin.symbol}</p>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      <h3 className="text-sm font-bold text-white font-mono">{coin.price}</h3>
+                      <p className="text-xs font-semibold text-emerald-400 font-mono">{coin.change}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Card Action CTA */}
+              <Link
+                to="/market"
+                className="mt-8 flex w-full items-center justify-center gap-4 rounded-xl border border-slate-700/80 bg-slate-800/40 py-3 text-sm font-semibold text-slate-200 transition-all duration-200 hover:bg-slate-800 hover:text-white hover:border-slate-600"
+              >
+                <span>View Complete Market</span>
+                <FaChevronRight className="text-xs text-slate-400" />
+              </Link>
 
             </div>
+          </motion.div>
 
-            <button className="mt-8 w-full py-4 rounded-2xl bg-red-600 hover:bg-red-700 transition text-white font-semibold text-lg">
-
-              View Full Market
-
-            </button>
-
-          </div>
-
-        </motion.div>
-
+        </div>
       </div>
-
     </section>
   );
 }

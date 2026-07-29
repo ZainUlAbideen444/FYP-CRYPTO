@@ -1,88 +1,137 @@
-import { useEffect, useState } from "react";
+import {
+  FaWallet,
+  FaBitcoin,
+  FaArrowTrendUp,
+  FaChartLine,
+} from "react-icons/fa6";
 
-import PageHeader from "../components/UI/PageHeader";
-import DashboardStats from "../components/Dashboard/DashboardStats";
-import PortfolioOverview from "../components/Dashboard/PortfolioOverview";
-import MarketOverview from "../components/Dashboard/MarketOverview";
-import RecentTransactions from "../components/Dashboard/RecentTransactions";
-import QuickActions from "../components/Dashboard/QuickActions";
 
-import { useMarketContext } from "../context/MarketContext";
-import { getTradeSummary } from "../services/tradeService";
+
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
-  const { coins } = useMarketContext();
-
-  const [loading, setLoading] = useState(true);
-
-  const [wallet, setWallet] = useState(0);
-  const [portfolio, setPortfolio] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [portfolioValue, setPortfolioValue] = useState(0);
-
-  useEffect(() => {
-    loadDashboard();
-  }, []);
-
-  async function loadDashboard() {
-    try {
-      const data = await getTradeSummary();
-
-      const summary = data.summary;
-
-      setWallet(summary.walletBalance);
-      setPortfolio(summary.holdings);
-      setTransactions(summary.recentTrades);
-      setPortfolioValue(summary.holdingsValue);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className="py-24 text-center text-gray-400">
-        Loading Dashboard...
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-8">
-      <PageHeader
-        title="Dashboard"
-        subtitle="Welcome back! Monitor your portfolio and market performance."
-      />
+    <div className="space-y-10">
 
-     <DashboardStats
-    wallet={wallet}
-    portfolio={portfolio}
-    portfolioValue={portfolioValue}
-/>
 
-      <div className="grid xl:grid-cols-3 gap-8">
-        <div className="xl:col-span-2">
-          <PortfolioOverview
-            portfolio={portfolio}
-          />
+      
+
+      {/* HERO */}
+
+      <section className="relative overflow-hidden rounded-3xl border border-red-500/20 bg-gradient-to-br from-[#111111] via-[#0b0b0b] to-[#050505] p-10">
+
+        <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-red-600/10 blur-[120px]" />
+
+        <div className="absolute bottom-0 left-0 h-56 w-56 rounded-full bg-red-500/10 blur-[120px]" />
+
+        <div className="relative z-10 grid lg:grid-cols-2 gap-10 items-center">
+
+          <div>
+
+            <span className="inline-block rounded-full bg-red-600/15 border border-red-500/20 px-4 py-2 text-red-400 text-sm tracking-widest uppercase">
+
+              Welcome Back
+
+            </span>
+
+            <h1 className="mt-6 text-5xl font-black text-white leading-tight">
+
+              Crypto Trading
+
+              <br />
+
+              Simulator
+
+            </h1>
+
+            <p className="mt-6 max-w-xl text-gray-400 leading-8">
+
+              Practice buying and selling cryptocurrency using
+              live market prices without risking real money.
+
+              Build your portfolio, track your performance
+              and improve your trading skills.
+
+            </p>
+
+            <div className="mt-10 flex flex-wrap gap-5">
+
+              <Link
+                to="/market"
+                className="rounded-2xl bg-red-600 px-7 py-4 font-semibold text-white hover:bg-red-700 duration-300"
+              >
+                Explore Market
+              </Link>
+
+              <Link
+                to="/trading"
+                className="rounded-2xl border border-red-500 px-7 py-4 font-semibold text-red-400 hover:bg-red-600 hover:text-white duration-300"
+              >
+                Start Trading
+              </Link>
+
+            </div>
+
+          </div>
+
+          <div className="grid grid-cols-2 gap-5">
+
+            <Card
+              icon={<FaWallet />}
+              title="$10,000"
+              subtitle="Virtual Wallet"
+            />
+
+            <Card
+              icon={<FaBitcoin />}
+              title="4"
+              subtitle="Supported Coins"
+            />
+
+            <Card
+              icon={<FaArrowTrendUp />}
+              title="Live"
+              subtitle="CoinGecko Prices"
+            />
+
+            <Card
+              icon={<FaChartLine />}
+              title="Portfolio"
+              subtitle="Performance Analytics"
+            />
+
+          </div>
+
         </div>
 
-        <MarketOverview
-          coins={coins}
-        />
+      </section>
+
+    </div>
+  );
+}
+
+function Card({ icon, title, subtitle }) {
+  return (
+    <div className="rounded-3xl border border-white/10 bg-[#111111] p-7 hover:border-red-500 transition duration-300 hover:-translate-y-2">
+
+      <div className="w-14 h-14 rounded-2xl bg-red-600/20 flex items-center justify-center text-red-500 text-2xl mb-5">
+
+        {icon}
+
       </div>
 
-      <div className="grid xl:grid-cols-3 gap-8">
-        <div className="xl:col-span-2">
-          <RecentTransactions
-            transactions={transactions}
-          />
-        </div>
+      <h2 className="text-3xl font-black text-white">
 
-        <QuickActions />
-      </div>
+        {title}
+
+      </h2>
+
+      <p className="mt-2 text-gray-400">
+
+        {subtitle}
+
+      </p>
+
     </div>
   );
 }
