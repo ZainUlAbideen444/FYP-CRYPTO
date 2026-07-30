@@ -1,15 +1,19 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaBitcoin, FaUser, FaEnvelope, FaLock, FaExclamationCircle } from "react-icons/fa";
-import Input from "../components/UI/Input";
-import PrimaryButton from "../components/UI/PrimaryButton";
+import { FaCircleExclamation, FaSpider, FaBitcoin, FaEthereum } from "react-icons/fa6";
+import { SiSolana } from "react-icons/si";
 import useAuth from "../hooks/useAuth";
 
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirm: "",
+  });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -42,84 +46,128 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center px-6 py-16">
-      <div className="w-full max-w-md">
-        <div className="flex flex-col items-center mb-10">
-          <Link to="/" className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center shadow-[0_0_35px_rgba(239,68,68,.45)]">
-              <FaBitcoin className="text-white text-2xl" />
+    <div className="relative min-h-screen w-full bg-[#07090e] flex items-center justify-center px-4 py-12 overflow-hidden select-none">
+      
+      {/* Background Crypto Glows & Floating Icons */}
+      <div className="absolute w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[140px] pointer-events-none -top-20 -left-20" />
+      <div className="absolute w-[500px] h-[500px] bg-sky-500/10 rounded-full blur-[140px] pointer-events-none -bottom-20 -right-20" />
+
+      <div className="absolute top-1/4 left-8 md:left-20 text-slate-800/40 text-7xl animate-pulse pointer-events-none">
+        <FaBitcoin />
+      </div>
+      <div className="absolute bottom-1/4 right-8 md:right-20 text-slate-800/40 text-7xl animate-pulse pointer-events-none">
+        <FaEthereum />
+      </div>
+      <div className="absolute top-1/3 right-1/4 text-slate-800/20 text-5xl pointer-events-none">
+        <SiSolana />
+      </div>
+
+      {/* Main Form Container - Explicit min-height forces tall card */}
+      <div className="relative w-full max-w-md min-h-[680px] my-auto rounded-3xl border border-slate-800/80 bg-[#0d121f]/95 px-8 py-12 shadow-2xl backdrop-blur-xl z-10 flex flex-col justify-between">
+        
+        {/* Header Section */}
+        <div className="flex flex-col items-center text-center">
+          <Link to="/" className="group mb-3">
+            <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-700/60 flex items-center justify-center text-amber-400 shadow-inner group-hover:scale-105 transition-transform duration-300">
+              <FaSpider className="text-2xl" />
             </div>
-            <h1 className="text-white text-3xl font-black">Crypto Web</h1>
           </Link>
-          <p className="text-gray-400 text-center">
-            Create a free account and start trading with $10,000 in virtual funds.
+
+          <h1 className="text-white text-2xl sm:text-3xl font-bold font-mono tracking-tight">
+            Create Account
+          </h1>
+          <p className="text-slate-400 text-xs sm:text-sm font-mono mt-2">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-amber-400 hover:text-amber-300 font-bold underline underline-offset-4 transition-colors"
+            >
+              Log in
+            </Link>
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="bg-[#111111] border border-[#232323] rounded-3xl p-8 space-y-6 shadow-xl"
-        >
-          <Input
-            label="Full Name"
-            name="name"
-            required
-            placeholder="Jane Doe"
-            value={form.name}
-            onChange={handleChange}
-            icon={<FaUser />}
-          />
+        {/* Form Controls */}
+        <form onSubmit={handleSubmit} className="flex flex-col items-center w-full">
+          
+          {/* Full Name */}
+          <div className="w-full max-w-xs flex flex-col gap-1.5 mb-4">
+            <label className="text-[11px] font-mono font-medium text-slate-300 tracking-wide uppercase">
+              Full Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              required
+              value={form.name}
+              onChange={handleChange}
+              className="w-full h-10 bg-[#131a2b] border border-slate-800 rounded-xl px-4 text-slate-100 text-sm font-mono outline-none transition-all duration-300 hover:border-slate-700 focus:border-amber-400 focus:shadow-[0_0_15px_rgba(251,191,36,0.25)]"
+            />
+          </div>
 
-          <Input
-            label="Email"
-            type="email"
-            name="email"
-            required
-            placeholder="you@example.com"
-            value={form.email}
-            onChange={handleChange}
-            icon={<FaEnvelope />}
-          />
+          {/* Email Address */}
+          <div className="w-full max-w-xs flex flex-col gap-1.5 mb-4">
+            <label className="text-[11px] font-mono font-medium text-slate-300 tracking-wide uppercase">
+              Email Address
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              value={form.email}
+              onChange={handleChange}
+              className="w-full h-10 bg-[#131a2b] border border-slate-800 rounded-xl px-4 text-slate-100 text-sm font-mono outline-none transition-all duration-300 hover:border-slate-700 focus:border-amber-400 focus:shadow-[0_0_15px_rgba(251,191,36,0.25)]"
+            />
+          </div>
 
-          <Input
-            label="Password"
-            type="password"
-            name="password"
-            required
-            placeholder="At least 6 characters"
-            value={form.password}
-            onChange={handleChange}
-            icon={<FaLock />}
-          />
+          {/* Password */}
+          <div className="w-full max-w-xs flex flex-col gap-1.5 mb-4">
+            <label className="text-[11px] font-mono font-medium text-slate-300 tracking-wide uppercase">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              required
+              value={form.password}
+              onChange={handleChange}
+              className="w-full h-10 bg-[#131a2b] border border-slate-800 rounded-xl px-4 text-slate-100 text-sm font-mono outline-none transition-all duration-300 hover:border-slate-700 focus:border-amber-400 focus:shadow-[0_0_15px_rgba(251,191,36,0.25)]"
+            />
+          </div>
 
-          <Input
-            label="Confirm Password"
-            type="password"
-            name="confirm"
-            required
-            placeholder="Repeat password"
-            value={form.confirm}
-            onChange={handleChange}
-            icon={<FaLock />}
-          />
+          {/* Confirm Password */}
+          <div className="w-full max-w-xs flex flex-col gap-1.5 mb-2">
+            <label className="text-[11px] font-mono font-medium text-slate-300 tracking-wide uppercase">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              name="confirm"
+              required
+              value={form.confirm}
+              onChange={handleChange}
+              className="w-full h-10 bg-[#131a2b] border border-slate-800 rounded-xl px-4 text-slate-100 text-sm font-mono outline-none transition-all duration-300 hover:border-slate-700 focus:border-amber-400 focus:shadow-[0_0_15px_rgba(251,191,36,0.25)]"
+            />
+          </div>
 
+          {/* Error Display */}
           {error && (
-            <div className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium bg-red-600/10 text-red-400 border border-red-600/30">
-              <FaExclamationCircle />
-              {error}
+            <div className="w-full max-w-xs mt-3 flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-mono bg-rose-500/10 text-rose-400 border border-rose-500/20">
+              <FaCircleExclamation className="shrink-0 text-sm" />
+              <span>{error}</span>
             </div>
           )}
 
-          <PrimaryButton type="submit" className="w-full" disabled={submitting}>
-            {submitting ? "Creating account..." : "Create Account"}
-          </PrimaryButton>
-
-          <p className="text-center text-gray-500 text-sm">
-            Already have an account?{" "}
-            <Link to="/login" className="text-red-500 hover:text-red-400 font-semibold">
-              Log In
-            </Link>
-          </p>
+          {/* Separate Button Wrapper with Large Top Margin (mt-10) and Half Width (w-1/2) */}
+          <div className="w-full max-w-xs flex justify-center mt-10">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-1/2 py-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-mono text-sm font-bold tracking-wider rounded-xl shadow-lg active:scale-[0.98] transition-all"
+            >
+              {submitting ? "Creating..." : "Register"}
+            </button>
+          </div>
         </form>
       </div>
     </div>

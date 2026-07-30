@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   FaBars,
   FaTimes,
@@ -13,16 +13,30 @@ import useAuth from "../hooks/useAuth";
 export default function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // Expanded Public Links for better desktop balance
+  // Helper for smooth scrolling to sections
+  const handleAnchorClick = (e, targetId) => {
+    if (location.pathname === "/") {
+      e.preventDefault();
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      e.preventDefault();
+      navigate(`/#${targetId}`);
+    }
+  };
+
   const publicLinks = [
     { title: "Home", to: "/" },
     { title: "Markets", to: "/market" },
-    { title: "Features", to: "/#features" },
-    { title: "How It Works", to: "/#how-it-works" },
+    { title: "Features", to: "#features", isAnchor: true },
+    { title: "How It Works", to: "#how-it-works", isAnchor: true },
   ];
 
-  // Comprehensive Authenticated App Links
   const privateLinks = [
     { title: "Dashboard", to: "/dashboard" },
     { title: "Markets", to: "/market" },
@@ -41,7 +55,7 @@ export default function Navbar() {
         {/* Brand Logo */}
         <Link
           to={isAuthenticated ? "/dashboard" : "/"}
-          className="flex items-center gap-5 group focus:outline-none"
+          className="flex items-center gap-3 group focus:outline-none"
         >
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-200">
             <FaBitcoin className="text-slate-950 text-xl" />
@@ -57,30 +71,40 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Links */}
-        <nav className="hidden lg:flex items-center gap-19 bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/60">
-          {links.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `px-4 py-1.5 rounded-xl text-sm font-medium transition-all duration-150 ${
-                  isActive
-                    ? "bg-slate-800 text-emerald-400 shadow-sm border border-slate-700/50"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800/40"
-                }`
-              }
-            >
-              {item.title}
-            </NavLink>
-          ))}
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center gap-2 bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/60">
+          {links.map((item) =>
+            item.isAnchor ? (
+              <a
+                key={item.to}
+                href={item.to}
+                onClick={(e) => handleAnchorClick(e, item.to.replace("#", ""))}
+                className="px-4 py-1.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition-all duration-150"
+              >
+                {item.title}
+              </a>
+            ) : (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `px-4 py-1.5 rounded-xl text-sm font-medium transition-all duration-150 ${
+                    isActive
+                      ? "bg-slate-800 text-emerald-400 shadow-sm border border-slate-700/50"
+                      : "text-slate-400 hover:text-white hover:bg-slate-800/40"
+                  }`
+                }
+              >
+                {item.title}
+              </NavLink>
+            )
+          )}
         </nav>
 
-        {/* Desktop Action Buttons / User Profile */}
+        {/* Desktop Action Buttons */}
         <div className="hidden lg:flex items-center gap-3">
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
-              {/* User Chip */}
               <Link
                 to="/settings"
                 className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition-colors"
@@ -91,7 +115,6 @@ export default function Navbar() {
                 </span>
               </Link>
 
-              {/* Logout CTA */}
               <button
                 onClick={logout}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-rose-950/40 hover:text-rose-400 text-slate-400 border border-slate-800 hover:border-rose-900/50 text-sm font-semibold transition-all"
@@ -121,7 +144,7 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile Menu Toggle Button */}
+        {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="lg:hidden p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 focus:outline-none transition-colors"
@@ -131,64 +154,39 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Menu Drawer */}
       {mobileOpen && (
         <div className="lg:hidden border-t border-slate-800 bg-[#0D1117] px-4 pt-3 pb-6 space-y-3">
           <div className="flex flex-col gap-1">
-            {links.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                onClick={() => setMobileOpen(false)}
-                className={({ isActive }) =>
-                  `px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-slate-800 text-emerald-400 border border-slate-700/50"
-                      : "text-slate-300 hover:bg-slate-800/50"
-                  }`
-                }
-              >
-                {item.title}
-              </NavLink>
-            ))}
-          </div>
-
-          <div className="pt-3 border-t border-slate-800/80">
-            {isAuthenticated ? (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 px-4 py-2 text-slate-400 text-sm">
-                  <FaUserCircle className="text-emerald-400" />
-                  <span>Signed in as <strong className="text-white">{user?.name}</strong></span>
-                </div>
-                <button
-                  onClick={() => {
+            {links.map((item) =>
+              item.isAnchor ? (
+                <a
+                  key={item.to}
+                  href={item.to}
+                  onClick={(e) => {
                     setMobileOpen(false);
-                    logout();
+                    handleAnchorClick(e, item.to.replace("#", ""));
                   }}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-rose-950/30 text-rose-400 border border-rose-900/40 text-sm font-semibold"
+                  className="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/50 transition-colors"
                 >
-                  <FaSignOutAlt />
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                <Link
-                  to="/login"
+                  {item.title}
+                </a>
+              ) : (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
                   onClick={() => setMobileOpen(false)}
-                  className="text-center py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 text-sm font-medium"
+                  className={({ isActive }) =>
+                    `px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                      isActive
+                        ? "bg-slate-800 text-emerald-400 border border-slate-700/50"
+                        : "text-slate-300 hover:bg-slate-800/50"
+                    }`
+                  }
                 >
-                  Log In
-                </Link>
-
-                <Link
-                  to="/register"
-                  onClick={() => setMobileOpen(false)}
-                  className="text-center py-2.5 rounded-xl bg-emerald-500 text-slate-950 text-sm font-semibold"
-                >
-                  Register
-                </Link>
-              </div>
+                  {item.title}
+                </NavLink>
+              )
             )}
           </div>
         </div>

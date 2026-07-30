@@ -3,189 +3,138 @@ import {
   FaBitcoin,
   FaArrowTrendUp,
   FaArrowTrendDown,
+  FaShieldHalved,
+  FaChartLine,
 } from "react-icons/fa6";
 
 export default function TradeSummary({ trade }) {
-const portfolioValue = trade.portfolio.reduce(
-  (total, coin) => total + coin.currentValue,
-  0
-);
+  const portfolioValue = trade.portfolio.reduce(
+    (total, coin) => total + coin.currentValue,
+    0
+  );
 
-const investedValue = trade.portfolio.reduce(
-  (total, coin) => total + coin.investedAmount,
-  0
-);
+  const investedValue = trade.portfolio.reduce(
+    (total, coin) => total + coin.investedAmount,
+    0
+  );
 
-const profitLoss = portfolioValue - investedValue;
+  const profitLoss = portfolioValue - investedValue;
 
   return (
-    <div className="space-y-6">
-
-      {/* Wallet */}
-
-      <div className="bg-[#101010] border border-[#232323] rounded-3xl p-6">
-
-        <div className="flex items-center gap-3 mb-4">
-
-          <FaWallet className="text-red-500 text-2xl" />
-
-          <h2 className="text-xl text-white font-bold">
-            Wallet
-          </h2>
-
+    <div className="rounded-2xl border border-slate-800/80 bg-[#0B0E17]/95 p-6 shadow-2xl backdrop-blur-md flex flex-col justify-between h-full min-h-[620px]">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-800/80">
+          <div className="flex items-center gap-2">
+            <FaChartLine className="text-sky-400 text-base" />
+            <h2 className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
+              Account Terminal
+            </h2>
+          </div>
+          <span className="text-[10px] font-mono bg-sky-500/10 border border-sky-500/20 text-sky-400 px-2 py-0.5 rounded">
+            DEMO ACCOUNT
+          </span>
         </div>
 
-        <h1 className="text-4xl font-bold text-white">
-
-          $
-          {trade.wallet.toLocaleString()}
-
-        </h1>
-
-        <p className="text-gray-400 mt-2">
-
-          Virtual Balance
-
-        </p>
-
-      </div>
-
-      {/* Portfolio */}
-
-      <div className="bg-[#101010] border border-[#232323] rounded-3xl p-6">
-
-        <div className="flex items-center gap-3 mb-5">
-
-          <FaBitcoin className="text-yellow-500 text-xl" />
-
-          <h2 className="text-white text-xl font-bold">
-
-            Portfolio
-
-          </h2>
-
+        {/* Available Margin / Wallet Card */}
+        <div className="rounded-xl border border-slate-800 bg-[#121827] p-5 relative overflow-hidden">
+          <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-sky-500/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-mono text-slate-400 flex items-center gap-1.5">
+              <FaWallet className="text-sky-400" /> Margin Available
+            </span>
+            <span className="text-[10px] font-mono text-slate-400">USDT</span>
+          </div>
+          <div className="text-3xl font-mono font-bold text-slate-100 tracking-tight">
+            ${trade.wallet.toLocaleString()}
+          </div>
+          <p className="text-[11px] text-slate-500 font-mono mt-2 flex items-center gap-1">
+            <FaShieldHalved className="text-slate-600" /> Protected Virtual Balance
+          </p>
         </div>
 
-        <div className="space-y-4">
-
-          <div className="flex justify-between">
-
-            <span className="text-gray-400">
-
-              Holdings
-
+        {/* Position Analytics */}
+        <div className="rounded-xl border border-slate-800 bg-[#121827] p-5 space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-800/80">
+            <span className="text-xs font-mono uppercase text-slate-400 font-semibold flex items-center gap-1.5">
+              <FaBitcoin className="text-amber-400" /> Portfolio Stats
             </span>
-
-            <span className="text-white font-semibold">
-
-              {trade.portfolio.length}
-
-            </span>
-
           </div>
 
-          <div className="flex justify-between">
+          <div className="space-y-3 font-mono text-xs">
+            <div className="flex justify-between items-center">
+              <span className="text-slate-400">Active Positions</span>
+              <span className="text-slate-200 font-bold bg-slate-800 px-2 py-0.5 rounded">
+                {trade.portfolio.length} Assets
+              </span>
+            </div>
 
-            <span className="text-gray-400">
+            <div className="flex justify-between items-center">
+              <span className="text-slate-400">Market Valuation</span>
+              <span className="text-slate-100 font-bold">
+                ${portfolioValue.toLocaleString()}
+              </span>
+            </div>
 
-              Portfolio Value
-
-            </span>
-
-            <span className="text-white font-semibold">
-
-              $
-
-              {portfolioValue.toLocaleString()}
-
-            </span>
-
+            <div className="flex justify-between items-center">
+              <span className="text-slate-400">Total Invested</span>
+              <span className="text-slate-300">
+                ${investedValue.toLocaleString()}
+              </span>
+            </div>
           </div>
-
-          <div className="flex justify-between">
-
-            <span className="text-gray-400">
-
-              Invested
-
-            </span>
-
-            <span className="text-white font-semibold">
-
-              $
-
-              {investedValue.toLocaleString()}
-
-            </span>
-
-          </div>
-
         </div>
 
-      </div>
-
-      {/* Profit */}
-
-      <div
-        className={`rounded-3xl p-6 border ${
-          profitLoss >= 0
-            ? "bg-green-900/20 border-green-700"
-            : "bg-red-900/20 border-red-700"
-        }`}
-      >
-
-        <div className="flex items-center gap-3 mb-3">
-
-          {profitLoss >= 0 ? (
-            <FaArrowTrendUp className="text-green-500 text-2xl" />
-          ) : (
-            <FaArrowTrendDown className="text-red-500 text-2xl" />
-          )}
-
-          <h2 className="text-white text-xl font-bold">
-
-            Profit / Loss
-
-          </h2>
-
-        </div>
-
-        <h1
-          className={`text-3xl font-bold ${
-            profitLoss >= 0
-              ? "text-green-500"
-              : "text-red-500"
-          }`}
-        >
-
-          {profitLoss >= 0 ? "+" : "-"}
-
-          $
-
-          {Math.abs(profitLoss).toLocaleString()}
-
-        </h1>
-
-      </div>
-
-      {/* Feedback */}
-
-      {trade.feedback && (
-
+        {/* PnL Card */}
         <div
-          className={`rounded-2xl p-4 text-center font-semibold ${
-            trade.feedback.type === "success"
-              ? "bg-green-600/20 text-green-400 border border-green-700"
-              : "bg-red-600/20 text-red-400 border border-red-700"
+          className={`rounded-xl p-5 border shadow-lg transition-all ${
+            profitLoss >= 0
+              ? "bg-emerald-950/20 border-emerald-500/30"
+              : "bg-rose-950/20 border-rose-500/30"
           }`}
         >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-mono uppercase text-slate-300 font-semibold flex items-center gap-1.5">
+              {profitLoss >= 0 ? (
+                <FaArrowTrendUp className="text-emerald-400" />
+              ) : (
+                <FaArrowTrendDown className="text-rose-400" />
+              )}
+              Unrealized PnL
+            </span>
+            <span
+              className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold ${
+                profitLoss >= 0
+                  ? "bg-emerald-500/20 text-emerald-400"
+                  : "bg-rose-500/20 text-rose-400"
+              }`}
+            >
+              {profitLoss >= 0 ? "PROFIT" : "LOSS"}
+            </span>
+          </div>
 
-          {trade.feedback.message}
-
+          <div
+            className={`text-2xl font-mono font-bold tracking-tight ${
+              profitLoss >= 0 ? "text-emerald-400" : "text-rose-400"
+            }`}
+          >
+            {profitLoss >= 0 ? "+" : "-"}
+            ${Math.abs(profitLoss).toLocaleString()}
+          </div>
         </div>
+      </div>
 
+      {/* Execution Feedback Notification */}
+      {trade.feedback && (
+        <div
+          className={`mt-4 rounded-xl p-3.5 text-xs font-mono font-semibold text-center border ${
+            trade.feedback.type === "success"
+              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+              : "bg-rose-500/10 text-rose-400 border-rose-500/30"
+          }`}
+        >
+          {trade.feedback.message}
+        </div>
       )}
-
     </div>
   );
 }
