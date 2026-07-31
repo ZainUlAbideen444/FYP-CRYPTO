@@ -1,25 +1,33 @@
 import api from "./api";
 
-// Dashboard Summary
 export const getPortfolioSummary = async () => {
-  const { data } = await api.get("/portfolio");
-  return data.summary;
+  try {
+    const response = await api.get("/portfolio");
+    // Standardizes backend response variations safely
+    return response.data?.summary || response.data || { holdings: [], totalValue: 0, totalProfitLoss: 0 };
+  } catch (error) {
+    console.error("Error fetching portfolio summary:", error);
+    return { holdings: [], totalValue: 0, totalProfitLoss: 0 };
+  }
 };
 
-// Holdings
-export const getHoldings = async () => {
-  const { data } = await api.get("/portfolio/holdings");
-  return data.holdings;
+export const getPerformanceAnalytics = async () => {
+  try {
+    const response = await api.get("/performance");
+    return response.data?.analytics || response.data || { monthlyPnL: [], assetAllocation: [] };
+  } catch (error) {
+    console.error("Error fetching performance analytics:", error);
+    return { monthlyPnL: [], assetAllocation: [] };
+  }
 };
 
-// Performance
-export const getPerformance = async () => {
-  const { data } = await api.get("/portfolio/performance");
-  return data.performance;
-};
-
-// Reset Portfolio
+// Fixed: Added exported resetPortfolio function requested by TradeContext.jsx
 export const resetPortfolio = async () => {
-  const { data } = await api.post("/portfolio/reset");
-  return data;
+  try {
+    const response = await api.post("/portfolio/reset");
+    return response.data;
+  } catch (error) {
+    console.error("Error resetting portfolio:", error);
+    return { success: false, message: error.response?.data?.message || "Failed to reset portfolio" };
+  }
 };

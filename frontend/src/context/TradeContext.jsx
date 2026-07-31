@@ -1,137 +1,95 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-
-import { getTopCoins } from "../services/marketService";
-
-import {
-  getTradeSummary,
-  getTradeHistory,
-  buyCoin,
-  sellCoin,
-} from "../services/tradeService";
-
-import { resetPortfolio } from "../services/PortfolioService";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import api from "../services/api";
 
 const TradeContext = createContext();
 
-export function TradeProvider({ children }) {
+export const TradeProvider = ({ children }) => {
+  const [portfolio, setPortfolio] = useState([]);
+  const [wallet, setWallet] = useState(0);
+  const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [coins, setCoins] = useState([]);
-  const [wallet, setWallet] = useState(0);
-  const [portfolio, setPortfolio] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-
-  async function refresh() {
+  const fetchTradeData = useCallback(async () => {
     try {
-      const [market, summary, history] = await Promise.all([
-        getTopCoins(),
-        getTradeSummary(),
-        getTradeHistory(),
-      ]);
+      setLoading(true);
 
-      setCoins(market.coins || []);
-      setWallet(summary.summary.walletBalance || 0);
-      setPortfolio(summary.summary.holdings || []);
-      setTransactions(history.trades || []);
-    } catch (err) {
-      console.error(err);
+      // Fetch summary (analytics)
+      const summaryRes = await api.get("/trades/summary");
+      const summaryData = summaryRes.data?.summary || summaryRes.data || {};
+
+      // Extracts walletBalance (matches User model field)
+      const balance =
+        summaryData.walletBalance ??
+        summaryData.wallet ??
+        summaryData.cash ??
+        0;
+
+      // Extract holdings / portfolio array
+      const rawPortfolio =
+        summaryData.holdings ||
+        summaryData.portfolio ||
+        summaryData.assets ||
+        [];
+
+      setWallet(Number(balance));
+      setPortfolio(Array.isArray(rawPortfolio) ? rawPortfolio : []);
+
+      // Fetch history
+      const historyRes = await api.get("/trades/history");
+      const rawHistory = historyRes.data?.trades || [];
+      setHistory(Array.isArray(rawHistory) ? rawHistory : []);
+    } catch (error) {
+      console.error("Error fetching trade context data:", error);
     } finally {
       setLoading(false);
     }
-  }
-
-  useEffect(() => {
-    refresh();
-
-    const interval = setInterval(refresh, 20000);
-
-    return () => clearInterval(interval);
   }, []);
 
-  async function buy(coinId, quantity) {
+  const executeTrade = async (type, coinIdOrSymbol, amount, price) => {
     try {
-      const res = await buyCoin(coinId, quantity);
-
-      await refresh();
-
-      return {
-        success: true,
-        message: res.message,
+      const endpoint = type === "BUY" ? "/trades/buy" : "/trades/sell";
+      
+      // Sends both coinId and quantity to match tradeController.js expectations
+      const payload = {
+        coinId: coinIdOrSymbol.toLowerCase(),
+        quantity: Number(amount),
+        price: Number(price),
       };
+
+      const response = await api.post(endpoint, payload);
+      await fetchTradeData(); // Refresh holdings & balance immediately
+
+      return { success: true, data: response.data };
     } catch (err) {
+      console.error("Execute Trade Error:", err);
       return {
         success: false,
-        message:
+        error:
           err.response?.data?.message ||
-          err.message,
+          err.message ||
+          "Transaction failed on server.",
       };
     }
-  }
+  };
 
-  async function sell(coinId, quantity) {
-    try {
-      const res = await sellCoin(coinId, quantity);
-
-      await refresh();
-
-      return {
-        success: true,
-        message: res.message,
-      };
-    } catch (err) {
-      return {
-        success: false,
-        message:
-          err.response?.data?.message ||
-          err.message,
-      };
-    }
-  }
-
-  async function resetAccount() {
-    try {
-      const res = await resetPortfolio();
-
-      await refresh();
-
-      return {
-        success: true,
-        message: res.message,
-      };
-    } catch (err) {
-      return {
-        success: false,
-        message:
-          err.response?.data?.message ||
-          err.message,
-      };
-    }
-  }
+  useEffect(() => {
+    fetchTradeData();
+  }, [fetchTradeData]);
 
   return (
     <TradeContext.Provider
       value={{
-        loading,
-        coins,
-        wallet,
         portfolio,
-        transactions,
-        refresh,
-        buy,
-        sell,
-        resetAccount,
+        wallet,
+        history,
+        loading,
+        executeTrade,
+        refreshTrades: fetchTradeData,
       }}
     >
       {children}
     </TradeContext.Provider>
   );
-}
+};
 
-export function useTradeContext() {
-  return useContext(TradeContext);
-}
+export const useTradeContext = () => useContext(TradeContext);

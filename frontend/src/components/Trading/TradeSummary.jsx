@@ -1,6 +1,5 @@
 import { FaWallet } from "react-icons/fa";
 import {
-  FaBitcoin,
   FaArrowTrendUp,
   FaArrowTrendDown,
   FaShieldHalved,
@@ -8,15 +7,17 @@ import {
 } from "react-icons/fa6";
 
 export default function TradeSummary({ trade }) {
-  const portfolioValue = trade.portfolio.reduce(
-    (total, coin) => total + coin.currentValue,
-    0
-  );
+  const portfolioValue = (trade.portfolio || []).reduce((total, coin) => {
+    const qty = coin.quantity || coin.amount || 0;
+    const price = coin.currentPrice || coin.price || trade.coins.find(c => c.symbol?.toLowerCase() === coin.symbol?.toLowerCase())?.price || 0;
+    return total + (qty * price);
+  }, 0);
 
-  const investedValue = trade.portfolio.reduce(
-    (total, coin) => total + coin.investedAmount,
-    0
-  );
+  const investedValue = (trade.portfolio || []).reduce((total, coin) => {
+    const qty = coin.quantity || coin.amount || 0;
+    const buyPrice = coin.buyPrice || coin.avgPrice || coin.investedAmount || 0;
+    return total + (coin.investedAmount ? coin.investedAmount : qty * buyPrice);
+  }, 0);
 
   const profitLoss = portfolioValue - investedValue;
 
@@ -35,7 +36,7 @@ export default function TradeSummary({ trade }) {
           </span>
         </div>
 
-        {/* Available Margin / Wallet Card */}
+        {/* Available Wallet Balance */}
         <div className="rounded-xl border border-slate-800 bg-[#121827] p-5 relative overflow-hidden">
           <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-sky-500/5 rounded-full blur-2xl pointer-events-none" />
           <div className="flex items-center justify-between mb-2">
@@ -45,18 +46,18 @@ export default function TradeSummary({ trade }) {
             <span className="text-[10px] font-mono text-slate-400">USDT</span>
           </div>
           <div className="text-3xl font-mono font-bold text-slate-100 tracking-tight">
-            ${trade.wallet.toLocaleString()}
+            ${(trade.wallet || 0).toLocaleString()}
           </div>
           <p className="text-[11px] text-slate-500 font-mono mt-2 flex items-center gap-1">
             <FaShieldHalved className="text-slate-600" /> Protected Virtual Balance
           </p>
         </div>
 
-        {/* Position Analytics */}
+        {/* Portfolio Positions Summary */}
         <div className="rounded-xl border border-slate-800 bg-[#121827] p-5 space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-slate-800/80">
             <span className="text-xs font-mono uppercase text-slate-400 font-semibold flex items-center gap-1.5">
-              <FaBitcoin className="text-amber-400" /> Portfolio Stats
+              Portfolio Statistics
             </span>
           </div>
 
@@ -64,27 +65,27 @@ export default function TradeSummary({ trade }) {
             <div className="flex justify-between items-center">
               <span className="text-slate-400">Active Positions</span>
               <span className="text-slate-200 font-bold bg-slate-800 px-2 py-0.5 rounded">
-                {trade.portfolio.length} Assets
+                {trade.portfolio?.length || 0} Assets
               </span>
             </div>
 
             <div className="flex justify-between items-center">
               <span className="text-slate-400">Market Valuation</span>
               <span className="text-slate-100 font-bold">
-                ${portfolioValue.toLocaleString()}
+                ${portfolioValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
 
             <div className="flex justify-between items-center">
               <span className="text-slate-400">Total Invested</span>
               <span className="text-slate-300">
-                ${investedValue.toLocaleString()}
+                ${investedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
           </div>
         </div>
 
-        {/* PnL Card */}
+        {/* Real-time PnL Card */}
         <div
           className={`rounded-xl p-5 border shadow-lg transition-all ${
             profitLoss >= 0
@@ -118,12 +119,12 @@ export default function TradeSummary({ trade }) {
             }`}
           >
             {profitLoss >= 0 ? "+" : "-"}
-            ${Math.abs(profitLoss).toLocaleString()}
+            ${Math.abs(profitLoss).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
         </div>
       </div>
 
-      {/* Execution Feedback Notification */}
+      {/* Execution Feedback Banner */}
       {trade.feedback && (
         <div
           className={`mt-4 rounded-xl p-3.5 text-xs font-mono font-semibold text-center border ${

@@ -1,62 +1,86 @@
-import { FaSearch, FaSyncAlt } from "react-icons/fa";
-import MarketCard from "../components/MarketCard";
-import CoinTable from "../components/CoinTable";
-import useMarket from "../hooks/useMarket";
+import { useState } from "react";
+import { useMarketContext } from "../context/MarketContext";
+import MarketTable from "../components/MarketTable";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 
 export default function Market() {
-  const { filteredCoins, search, setSearch } = useMarket();
+  const { coins = [], loading, error } = useMarketContext();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("all"); // 'all', 'gainers', 'losers'
 
-  function handleRefresh() {
-    setSearch("");
-  }
+  // Filter coins based on search input and filter buttons
+  const filteredCoins = coins.filter((coin) => {
+    const nameMatch = coin.name?.toLowerCase().includes(searchTerm.toLowerCase());
+    const symbolMatch = coin.symbol?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = nameMatch || symbolMatch;
+
+    const change = Number(coin.change || coin.price_change_percentage_24h || 0);
+
+    if (!matchesSearch) return false;
+    if (filter === "gainers") return change > 0;
+    if (filter === "losers") return change < 0;
+    return true;
+  });
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800/80">
+    <div className="p-6 max-w-7xl mx-auto space-y-6 font-sans">
+      {/* Header & Controls */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">
-            Crypto Market
+          <h1 className="text-2xl font-bold font-mono text-white tracking-wide">
+            CRYPTO MARKETS
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Real-time cryptocurrency valuation, 24h metrics, and direct trade routing.
+          <p className="text-xs text-slate-400 font-mono mt-1">
+            Real-time market prices, 24h performance, and assets tracking.
           </p>
         </div>
 
-        {/* Search & Actions Header Controls */}
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
+        {/* Search Bar & Filter Buttons */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {/* Search Input */}
+          <div className="relative flex-1 sm:w-64">
+            <FaMagnifyingGlass className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
             <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              type="text"
               placeholder="Search coin or symbol..."
-              className="bg-slate-900/90 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30 w-64 sm:w-72 transition-all font-mono"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-[#0B0E17] border border-slate-800 focus:border-sky-500 rounded-xl pl-9 pr-4 py-2 text-xs text-white font-mono outline-none transition-colors placeholder:text-slate-600"
             />
           </div>
 
-          <button
-            onClick={handleRefresh}
-            className="px-4 py-2 text-xs font-semibold rounded-xl border border-slate-800 bg-slate-900/80 text-slate-200 hover:border-emerald-500/40 hover:text-emerald-400 flex items-center gap-2 transition-all duration-200"
-          >
-            <FaSyncAlt className="text-[10px]" />
-            Reset
-          </button>
+          {/* Quick Filters */}
+          <div className="flex bg-[#0B0E17] border border-slate-800 p-1 rounded-xl text-xs font-mono">
+            {["all", "gainers", "losers"].map((f) => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`px-3 py-1 rounded-lg capitalize font-semibold transition-all ${
+                  filter === f
+                    ? "bg-slate-800 text-white shadow-sm"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Hero Quick Watch Cards */}
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-4">
-        {filteredCoins.map((coin) => (
-          <MarketCard
-            key={coin.id}
-            coin={coin}
-          />
-        ))}
-      </div>
-
-      {/* Main Coin Data Table */}
-      <CoinTable coins={filteredCoins} />
+      {/* Main Table */}
+      {loading ? (
+        <div className="p-12 text-center font-mono text-slate-400 bg-[#0B0E17] rounded-xl border border-slate-800">
+          <div className="w-5 h-5 border-2 border-sky-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          Loading crypto markets...
+        </div>
+      ) : error ? (
+        <div className="p-6 text-center text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-xl font-mono text-xs">
+          {error}
+        </div>
+      ) : (
+        <MarketTable coins={filteredCoins} />
+      )}
     </div>
   );
 }

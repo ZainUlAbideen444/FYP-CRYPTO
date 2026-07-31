@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import PageHeader from "../components/UI/PageHeader";
 import BuySellCard from "../components/Trading/BuySellCard";
@@ -9,16 +9,31 @@ import useTrade from "../hooks/useTrade";
 export default function Trading() {
   const trade = useTrade();
   const [searchParams] = useSearchParams();
+  const hasPreselected = useRef(false);
 
-  // If the user arrived here via a "Trade" button on the Market page
-  // (e.g. /trading?coin=BTC), preselect that coin.
+  // Sync preselected coin from URL query param (e.g., /trading?coin=ETH)
   useEffect(() => {
     const symbol = searchParams.get("coin");
-    if (!symbol) return;
-    const match = trade.coins.find((c) => c.symbol === symbol);
-    if (match) trade.setSelectedCoin(match);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+    if (!symbol || !trade.coins?.length) return;
+
+    // Only run URL preselection once or when user changes query param
+    if (!hasPreselected.current) {
+      const match = trade.coins.find(
+        (c) => c.symbol?.toLowerCase() === symbol.toLowerCase() || c.id === symbol
+      );
+      if (match) {
+        trade.setSelectedCoin(match);
+        hasPreselected.current = true;
+      }
+    }
+  }, [searchParams, trade.coins]);
+
+  // Fallback: If no coin selected at all, pick the first coin without resetting on auto-refresh
+  useEffect(() => {
+    if (trade.coins?.length > 0 && !trade.selectedCoin?.id) {
+      trade.setSelectedCoin(trade.coins[0]);
+    }
+  }, [trade.coins, trade.selectedCoin]);
 
   if (trade.loading || !trade.selectedCoin?.id)
     return (
@@ -31,29 +46,31 @@ export default function Trading() {
     );
 
   return (
-    <div className="space-y-6 max-w-[1700px] mx-auto pb-16">
-      {/* Binance Header Bar */}
+    <div className="space-y-6 max-w-[1700px] mx-auto pb-16 px-4">
+      {/* Header Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800/80 pb-4 gap-4">
         <PageHeader
           title="Spot Trading Terminal"
           subtitle="Real-time order matching engine with instant virtual settlement."
         />
+        
+        {/* Selected Coin Header Tag */}
         <div className="flex items-center gap-3 font-mono text-xs">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            SPOT / USDT LIVE
+            TRADING: {trade.selectedCoin.name} ({trade.selectedCoin.symbol?.toUpperCase()}/USDT)
           </div>
         </div>
       </div>
 
       {/* Main Exchange Workspace */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Full Height Buy Panel */}
+        {/* Buy Panel */}
         <div className="lg:col-span-4 min-h-[620px]">
           <BuySellCard type="Buy" trade={trade} />
         </div>
 
-        {/* Full Height Sell Panel */}
+        {/* Sell Panel */}
         <div className="lg:col-span-4 min-h-[620px]">
           <BuySellCard type="Sell" trade={trade} />
         </div>

@@ -11,7 +11,7 @@ import { formatCurrency } from "../utils/formatCurrency";
 import { FaChartPie, FaWallet, FaVault } from "react-icons/fa6";
 
 export default function Performance() {
-  const { wallet, portfolio, coins, loading } = useTradeContext();
+  const { wallet, portfolio = [], coins = [], loading } = useTradeContext();
 
   if (loading) {
     return (
@@ -24,19 +24,41 @@ export default function Performance() {
     );
   }
 
-  const portfolioValue = portfolio.reduce((total, asset) => {
-    const liveCoin =
-      coins.find((coin) => coin.symbol === asset.symbol) || asset;
+  // Extract raw numeric cash balance safely
+  const cashBalance = typeof wallet === "number" ? wallet : Number(wallet?.balance || wallet?.cash || 0);
 
-    return total + liveCoin.price * asset.quantity;
-  }, 0);
+  // Normalize holdings calculations to guarantee valid live prices and invested amounts
+  const processedPortfolio = portfolio.map((asset) => {
+    const symbol = String(asset.symbol || asset.coinSymbol || "").toUpperCase();
+    const liveCoin = coins.find(
+      (c) =>
+        c.symbol?.toUpperCase() === symbol ||
+        c.id?.toLowerCase() === symbol.toLowerCase()
+    );
 
-  const invested = portfolio.reduce(
-    (sum, asset) => sum + asset.investedAmount,
-    0
-  );
+    const quantity = Number(asset.quantity || asset.amount || 0);
+    const livePrice = Number(liveCoin?.price || liveCoin?.current_price || asset.price || asset.currentPrice || 0);
+    const buyPrice = Number(
+      asset.avgBuyPrice ?? asset.buyPrice ?? asset.priceAtPurchase ?? asset.averagePrice ?? livePrice
+    );
 
-  const netWorth = (wallet?.balance || 0) + portfolioValue;
+    const currentValue = quantity * livePrice;
+    const investedAmount = Number(asset.investedAmount ?? (quantity * buyPrice));
+
+    return {
+      ...asset,
+      symbol,
+      quantity,
+      livePrice,
+      buyPrice,
+      currentValue,
+      investedAmount,
+    };
+  });
+
+  const portfolioValue = processedPortfolio.reduce((total, asset) => total + asset.currentValue, 0);
+  const invested = processedPortfolio.reduce((sum, asset) => sum + asset.investedAmount, 0);
+  const netWorth = cashBalance + portfolioValue;
 
   return (
     <div className="space-y-8 pb-12">
@@ -63,7 +85,7 @@ export default function Performance() {
           </div>
         </div>
 
-        {/* Portfolio Value */}
+        {/* Live Portfolio Value */}
         <div className="rounded-2xl border border-slate-800/80 bg-[#11151F]/90 p-5 backdrop-blur-xl shadow-lg flex items-center justify-between">
           <div>
             <p className="text-slate-500 text-xs font-mono uppercase tracking-wider font-semibold">
@@ -78,14 +100,14 @@ export default function Performance() {
           </div>
         </div>
 
-        {/* Total Cash Balance */}
+        {/* Cash Balance */}
         <div className="rounded-2xl border border-slate-800/80 bg-[#11151F]/90 p-5 backdrop-blur-xl shadow-lg flex items-center justify-between">
           <div>
             <p className="text-slate-500 text-xs font-mono uppercase tracking-wider font-semibold">
               Available Cash
             </p>
             <h3 className="text-2xl font-mono font-extrabold text-white mt-1">
-              {formatCurrency(wallet?.balance || 0)}
+              {formatCurrency(cashBalance)}
             </h3>
           </div>
           <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400">
@@ -103,22 +125,19 @@ export default function Performance() {
 
       {/* Main Visual Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Growth Chart (Spans 2 Columns) */}
         <div className="lg:col-span-2">
           <PortfolioGrowthChart portfolioValue={portfolioValue} />
         </div>
-
-        {/* Asset Allocation Chart (1 Column) */}
         <div className="lg:col-span-1">
-          <AssetAllocationChart portfolio={portfolio} coins={coins} />
+          <AssetAllocationChart portfolio={processedPortfolio} coins={coins} />
         </div>
       </div>
 
       {/* Asset Performance Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <BestWorstAssets portfolio={portfolio} coins={coins} />
+        <BestWorstAssets portfolio={processedPortfolio} coins={coins} />
         <TradingInsights
-          portfolio={portfolio}
+          portfolio={processedPortfolio}
           coins={coins}
           wallet={wallet}
         />
